@@ -5,6 +5,8 @@
 #include "objects.h"
 #include <string>
 
+namespace MD3 {
+
 struct MD3Header {
 	char ident[4];
 	int version;
@@ -82,16 +84,22 @@ struct Surface {
 	std::vector<Vector> normals;
 };
 
+} // end namespace MD3
+
 class MD3Model
 {
 public:	
-	MD3Model(const char* modelfilename, const char* textureFilename);
+	MD3Model();
 
 	// Load M3 model into memory
-	bool load(const char* modelFilename, const char* textureFilename);
-	void parseSkins(const char* modelPath);
+	bool load(std::string modelFilename);
+	void parseSkinFile(std::string modelFilename);
+	void addLink(std::string tagName, MD3Model &model);
 
 	void setMaterialProperties(MaterialProps props);
+	void setAnimationParams(GLuint startFrame, GLuint endFrame, GLuint fps);
+	//void setAnimationPhase(MD3::AnimationPhase phase);
+	void drawModel(ShaderProgram *shaderProgram);
 	void onPrepare(float dt);
 	void onRender(ShaderProgram *shaderProgram);
 	void renderNormals(ShaderProgram *shaderProgram);
@@ -99,18 +107,24 @@ public:
 	~MD3Model(void);
 
 private:
-	std::vector<const char*> m_components;
+	std::vector<const char*> m_components;	
+	//MD3::AnimationPhase m_animPhase;
+	GLuint m_startFrame;
+	GLuint m_endFrame;
 	GLuint m_currentFrame;
+	GLuint m_nextFrame;
+	GLuint m_fps;
 
-	MD3Header m_header;
+	MD3::MD3Header m_header;
 
-	std::map<const char*, std::vector<Frame>> m_frames;
-	std::map<const char*, std::vector<Tag>> m_tags;
-	std::map<const char*, std::vector<Surface>> m_surfaces;
+	std::vector<MD3::Frame> m_frames;
+	std::vector<MD3::Tag> m_tags;
+	std::vector<MD3::Surface> m_surfaces;
+	std::map<std::string, MD3Model*> m_links;
 
-	std::map<const char*, std::vector<GLuint>> m_vertexBuffers;
-	std::map<const char*, std::vector<GLuint>> m_texCoordBuffers;
-	std::map<const char*, std::vector<GLuint>> m_normalBuffers;
+	std::vector<std::vector<GLuint>> m_vertexBuffers;
+	std::vector<GLuint> m_texCoordBuffers;
+	std::vector<std::vector<GLuint>> m_normalBuffers;
 	std::map<std::string, GLuint> m_textures;
 	MaterialProps m_materialProps;
 };
