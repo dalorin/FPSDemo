@@ -4,7 +4,7 @@ class ShaderProgram; // Forward declaration of ShaderProgram class.
 
 Fighter::Fighter(GameEngine* engine) : Object(engine)
 {
-	m_model = new Model("models/players/varge/", "models/varge/visor.tga");
+	m_model = new MD2Model("fighter.md2", "fighter.tga");
 
 	//Set material properties.
 	MaterialProps props;

@@ -3,6 +3,8 @@
 #include <vector>
 #include "objects.h"
 
+namespace MD2 {
+
 struct MD2Header {
 	char ident[4];
 	int version;
@@ -60,6 +62,8 @@ struct KeyFrame {
 	std::vector<Vertex> normals;	
 };
 
+} // end namespace MD2
+
 class MD2Model
 {
 public:
@@ -78,13 +82,13 @@ public:
 	~MD2Model(void);
 
 private:
-	MD2Header m_header;
-	std::vector<Skin> m_skins;
-	std::vector<TexCoord> m_texcoords;
-	std::vector<MD2TexCoord> m_md2Texcoords;
-	std::vector<Triangle> m_triangles;
-	std::vector<KeyFrame> m_keyframes;
-	KeyFrame m_interpolatedKeyFrame;
+	MD2::MD2Header m_header;
+	std::vector<MD2::Skin> m_skins;
+	std::vector<MD2::TexCoord> m_texcoords;
+	std::vector<MD2::MD2TexCoord> m_md2Texcoords;
+	std::vector<MD2::Triangle> m_triangles;
+	std::vector<MD2::KeyFrame> m_keyframes;
+	MD2::KeyFrame m_interpolatedKeyFrame;
 	GLuint m_vertexBuffer;
 	GLuint m_texCoordBuffer;
 	GLuint m_normalBuffer;

@@ -1,6 +1,6 @@
 #pragma once
 #include "objects.h"
-#include "Model.h"
+#include "MD2Model.h"
 
 class Weapon :
 	public Object
@@ -15,5 +15,5 @@ public:
 
 	~Weapon(void);
 private:
-	Model* m_model;
+	MD2Model* m_model;
 };

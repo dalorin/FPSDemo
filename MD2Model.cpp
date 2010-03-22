@@ -13,6 +13,7 @@ GLfloat vertexNormals[NUMVERTEXNORMALS][3] = {
 };
 
 using namespace std;
+using namespace MD2;
 
 MD2Model::MD2Model(void)
 {

@@ -2,7 +2,7 @@
 
 Weapon::Weapon(GameEngine* engine) : Object(engine)
 {
-	m_model = new Model("hk_53_fixed.md2", "hk53_n.tga");
+	m_model = new MD2Model("hk_53_fixed.md2", "hk53_n.tga");
 
 	//Set material properties.
 	MaterialProps props;

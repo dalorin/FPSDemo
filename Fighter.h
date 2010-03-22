@@ -1,6 +1,6 @@
 #pragma once
 #include "objects.h"
-#include "Model.h"
+#include "MD2Model.h"
 
 class GameEngine; // Forward declaration of GameEngine class.
 class ShaderProgram; // Forward declaration of ShaderProgram class;
@@ -16,5 +16,5 @@ public:
 	~Fighter(void);
 
 private:
-	Model* m_model;
+	MD2Model* m_model;
 };

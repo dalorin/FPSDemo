@@ -5,10 +5,11 @@
 #include <string>
 #include <sstream>
 #include "GameEngine.h"
-#define _USE_MD3_MODELS
-#include "Model.h"
+#include "MD2Model.h"
+#include "MD3Model.h"
 #include "Fighter.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "TexturedLandscape.h"
 #include "SkyBox.h"
 #include "Weapon.h"
@@ -53,6 +54,10 @@ bool GameEngine::init()
 	fighter->setPosition(0.0f, 10.0f, -10.0f);
 	fighter->setAcceleration(0.0f, 0.0f, 0.0f);
 	m_objects.push_back(fighter);
+
+	Enemy *enemy = new Enemy(this);
+	enemy->setPosition(-65.0f, 23.0f, 100.0f);
+	m_objects.push_back(enemy);
 
 	/*Weapon *weapon = new Weapon(this);
 	weapon->setScale(1.0f, 1.0f, 1.0f);
@@ -235,7 +240,7 @@ void GameEngine::prepare(float dt)
 }
 
 void GameEngine::render()
-{
+{	
 	glLoadIdentity();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Camera *mainCamera;
