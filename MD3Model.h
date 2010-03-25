@@ -114,6 +114,8 @@ private:
 	GLuint m_currentFrame;
 	GLuint m_nextFrame;
 	GLuint m_fps;
+	float m_timeCount;
+	float m_lerpValue;
 
 	MD3::MD3Header m_header;
 

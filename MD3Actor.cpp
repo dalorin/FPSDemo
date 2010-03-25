@@ -1,3 +1,4 @@
+#include "glee.h"
 #include "MD3Actor.h"
 #include <fstream>
 #include <sstream>
@@ -23,8 +24,8 @@ void MD3Actor::load(string modelPath)
 
 	parseAnims(modelPath + "animation.cfg");
 
-	setUpperAnimation(BOTH_DEATH2);
-	setLowerAnimation(BOTH_DEATH2);
+	setUpperAnimation(TORSO_STAND);
+	setLowerAnimation(LEGS_RUN);
 }
 
 void MD3Actor::setMaterialProperties(MaterialProps props)
@@ -66,6 +67,11 @@ void MD3Actor::parseAnims(string animFilename)
 
 		animCount++;
 	}
+
+	// Recalculate LEGS_* starting frames
+	int numTorsoFrames = m_animations[LEGS_WALKCR].startFrame - m_animations[TORSO_GESTURE].startFrame;
+	for (int i = LEGS_WALKCR; i < MAX_ANIMATIONS; i++)
+		m_animations[i].startFrame -= numTorsoFrames;
 }
 
 void MD3Actor::setUpperAnimation(AnimationPhase phase)
@@ -87,7 +93,7 @@ void MD3Actor::setLowerAnimation(AnimationPhase phase)
 }
 
 void MD3Actor::onPrepare(float dt)
-{
+{	
 	m_head.onPrepare(dt);
 	m_upper.onPrepare(dt);
 	m_lower.onPrepare(dt);
@@ -95,6 +101,7 @@ void MD3Actor::onPrepare(float dt)
 
 void MD3Actor::onRender(ShaderProgram *shaderProgram)
 {
+	glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 	m_lower.onRender(shaderProgram);
 }
 

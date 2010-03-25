@@ -177,6 +177,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Enemy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Fighter.cpp"
 				>
 			</File>
@@ -202,6 +206,10 @@
 			</File>
 			<File
 				RelativePath=".\MD2Model.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MD3Actor.cpp"
 				>
 			</File>
 			<File
@@ -255,6 +263,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Enemy.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Fighter.h"
 				>
 			</File>
@@ -280,6 +292,10 @@
 			</File>
 			<File
 				RelativePath=".\MD2Model.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MD3Actor.h"
 				>
 			</File>
 			<File
@@ -354,6 +370,22 @@
 			</File>
 			<File
 				RelativePath=".\hk_53.md2"
+				>
+			</File>
+			<File
+				RelativePath=".\hud.frag"
+				>
+			</File>
+			<File
+				RelativePath=".\hud.vert"
+				>
+			</File>
+			<File
+				RelativePath=".\md3.frag"
+				>
+			</File>
+			<File
+				RelativePath=".\md3.vert"
 				>
 			</File>
 			<File

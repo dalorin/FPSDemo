@@ -290,24 +290,25 @@ void MD2Model::onRender(ShaderProgram *shaderProgram)
 	glEnableVertexAttribArray(0);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, m_texCoordBuffer);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(3);
 		
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 
 	shaderProgram->sendMatrices();
 	shaderProgram->sendUniform("texture0", 0);
+	shaderProgram->sendUniform("lerp_value", 0.0f);
 	shaderProgram->sendMaterialProps(m_materialProps);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 
 	glDrawArrays(GL_TRIANGLES, 0, m_interpolatedKeyFrame.vertices.size());
+	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
 
 	glPopMatrix();

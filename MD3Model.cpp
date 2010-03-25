@@ -16,6 +16,7 @@ MD3Model::MD3Model()
 	m_endFrame = 0;
 	m_currentFrame = 0;
 	m_nextFrame = 0;
+	m_timeCount = 0.0f;
 }
 
 bool MD3Model::load(string modelFilename)
@@ -184,10 +185,21 @@ void MD3Model::setAnimationParams(GLuint startFrame, GLuint endFrame, GLuint fps
 
 void MD3Model::onPrepare(float dt)
 {
-	m_currentFrame = m_nextFrame;
-	m_nextFrame++;
-	if (m_nextFrame >= m_endFrame)
-		m_nextFrame = m_startFrame;
+	float oneOverFPS = 1.0f/(float)m_fps;
+	// Increment frame if enough time has passed
+	m_timeCount += dt;
+	if (m_timeCount >= oneOverFPS)
+	{
+		m_timeCount = fmod(m_timeCount, oneOverFPS);
+		m_currentFrame = m_nextFrame;
+		m_nextFrame++;
+		if (m_nextFrame >= m_endFrame)
+			m_nextFrame = m_startFrame;
+	}
+	m_lerpValue = m_timeCount / oneOverFPS;
+	/*stringstream str;
+	str << "dt: " << dt << "\tm_timeCount: " << m_timeCount << "\tm_lerpValue: " << m_lerpValue << endl;
+	OutputDebugString(str.str().c_str());*/
 }
 
 void MD3Model::drawModel(ShaderProgram *shaderProgram)
@@ -197,22 +209,33 @@ void MD3Model::drawModel(ShaderProgram *shaderProgram)
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[i][m_currentFrame]);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 		glEnableVertexAttribArray(0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[i][m_nextFrame]);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+		glEnableVertexAttribArray(1);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, m_texCoordBuffers[i]);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+		glEnableVertexAttribArray(2);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffers[i][m_currentFrame]);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+		glEnableVertexAttribArray(3);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffers[i][m_nextFrame]);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+		glEnableVertexAttribArray(4);
 			
 		glBindTexture(GL_TEXTURE_2D, m_textures[m_surfaces[i].header.name]);
 
 		shaderProgram->sendMatrices();
-		shaderProgram->sendUniform("texture0", 0);
+		shaderProgram->sendUniform("texture0", 0);		
+		shaderProgram->sendUniform("lerp_value", m_lerpValue);
 		shaderProgram->sendMaterialProps(m_materialProps);
 
 		glDrawElements(GL_TRIANGLES, m_surfaces[i].triangles.size() * 3, GL_UNSIGNED_INT, &m_surfaces[i].triangles[0]);
+		glDisableVertexAttribArray(4);
+		glDisableVertexAttribArray(3);
 		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(0);

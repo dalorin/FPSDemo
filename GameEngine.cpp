@@ -56,7 +56,8 @@ bool GameEngine::init()
 	m_objects.push_back(fighter);
 
 	Enemy *enemy = new Enemy(this);
-	enemy->setPosition(-65.0f, 23.0f, 100.0f);
+	enemy->setPosition(-280.0f, 23.0f, -100.0f);
+	enemy->setVelocity(1.8f, 0.0f, 0.0f);
 	m_objects.push_back(enemy);
 
 	/*Weapon *weapon = new Weapon(this);
@@ -78,8 +79,10 @@ bool GameEngine::init()
 	m_modelProgram = new ShaderProgram("model_pixel_lighting.vert", "model_pixel_lighting.frag");
 	
 	m_modelProgram->bindAttrib(0, "a_Vertex");
-	m_modelProgram->bindAttrib(1, "a_TexCoord0");
-	m_modelProgram->bindAttrib(2, "a_Normal");
+	m_modelProgram->bindAttrib(1, "b_Vertex");
+	m_modelProgram->bindAttrib(2, "a_TexCoord0");
+	m_modelProgram->bindAttrib(3, "a_Normal");
+	m_modelProgram->bindAttrib(4, "b_Normal");
 
 	m_modelProgram->link();	
 		
@@ -90,6 +93,14 @@ bool GameEngine::init()
 	m_basicProgram->bindAttrib(1, "a_Color");
 
 	m_basicProgram->link();
+
+	// Init HUD shader program.
+	m_hudProgram = new ShaderProgram("hud.vert", "hud.frag");
+
+	m_hudProgram->bindAttrib(0, "a_Vertex");
+	m_hudProgram->bindAttrib(1, "a_TexCoord0");
+
+	m_hudProgram->link();
 
 	// Init mouse.
 	SetCursorPos(getWidth() / 2, getHeight() / 2);
@@ -279,11 +290,11 @@ void GameEngine::render()
 
 	// Once the game world has rendered, we switch to an orthographic projection and draw the HUD.
 	setupOrthoProj();
-	m_modelProgram->sendUniform("fogDensity", 0.0f);
+	m_hudProgram->bind();
 
 	for (std::vector<Object*>::iterator it = m_HUD.begin(); it != m_HUD.end(); ++it)
 	{
-		(*it)->onRender(m_modelProgram);
+		(*it)->onRender(m_hudProgram);
 		(*it)->onPostRender();
 	}
 
@@ -349,4 +360,7 @@ int GameEngine::getHeight()
 
 GameEngine::~GameEngine(void)
 {
+	delete m_basicProgram;
+	delete m_modelProgram;
+	delete m_hudProgram;
 }

@@ -50,6 +50,7 @@ private:
 	//Shader programs
 	ShaderProgram *m_basicProgram;
 	ShaderProgram *m_modelProgram;
+	ShaderProgram *m_hudProgram;
 
 	GLfloat lightAngle;
 

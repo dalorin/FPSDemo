@@ -82,12 +82,12 @@ void TexturedLandscape::onRender(ShaderProgram *program)
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_texCoordBuffer);
-	glVertexAttribPointer(1, 2, GL_SHORT, GL_FALSE, 0, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_SHORT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(3);
 
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -95,12 +95,13 @@ void TexturedLandscape::onRender(ShaderProgram *program)
 
 	program->sendMatrices();
 	program->sendUniform("texture0", 0);
+	program->sendUniform("lerp_value", 0.0f);
 	program->sendMaterialProps(m_materialProps);
 	
 	glDrawArrays(GL_QUADS, 0, 4);
 		
+	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
 
 	glPopMatrix();

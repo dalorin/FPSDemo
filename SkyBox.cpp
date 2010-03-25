@@ -105,11 +105,12 @@ void SkyBox::onRender(ShaderProgram *program)
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_texCoordBuffer);
-	glVertexAttribPointer(1, 2, GL_SHORT, GL_FALSE, 0, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_SHORT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(2);
 	
 	program->sendMatrices();
 	program->sendUniform("texture0", 0);
+	program->sendUniform("lerp_value", 0.0f);
 	program->sendMaterialProps(m_materialProps);
 	
 	for (int i = 0; i < 5; i++)
@@ -121,7 +122,7 @@ void SkyBox::onRender(ShaderProgram *program)
 		glDrawArrays(GL_QUADS, (i) * 4, 4);
 	}
 
-	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(0);
 
 	glPopMatrix();
