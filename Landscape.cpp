@@ -1,6 +1,7 @@
 #include "Landscape.h"
 #include <vector>
 #include "Shader.h"
+#include "GameEngine.h"
 
 Landscape::Landscape(GameEngine *engine) : Object(engine)
 {
@@ -43,7 +44,7 @@ Landscape::Landscape(GameEngine *engine) : Object(engine)
 	glBufferData(GL_ARRAY_BUFFER, 3216 * sizeof(GLdouble), &colors[0], GL_STATIC_DRAW);
 }
 
-void Landscape::onRender(ShaderProgram *program)
+void Landscape::onRender()
 {
 	//Render content of vertex buffer
 	glPushMatrix();	
@@ -55,6 +56,9 @@ void Landscape::onRender(ShaderProgram *program)
 	glBindBuffer(GL_ARRAY_BUFFER, m_color);
 	glVertexAttribPointer(1, 4, GL_DOUBLE, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(1);
+
+	ShaderProgram *program = m_engine->m_modelProgram;
+	program->bind();
 
 	program->sendMatrices();
 	

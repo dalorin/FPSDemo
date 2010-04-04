@@ -234,6 +234,7 @@ void MD3Model::drawModel(ShaderProgram *shaderProgram)
 		shaderProgram->sendMaterialProps(m_materialProps);
 
 		glDrawElements(GL_TRIANGLES, m_surfaces[i].triangles.size() * 3, GL_UNSIGNED_INT, &m_surfaces[i].triangles[0]);
+
 		glDisableVertexAttribArray(4);
 		glDisableVertexAttribArray(3);
 		glDisableVertexAttribArray(2);

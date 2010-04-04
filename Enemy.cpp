@@ -1,8 +1,9 @@
 #include "Enemy.h"
+#include "GameEngine.h"
 
 Enemy::Enemy(GameEngine *engine) : Object(engine)
 {
-	m_actor.load("models/players/varge/");
+	m_actor.load("models/players/chaos-marine/");
 
 	//Set material properties.
 	MaterialProps props;
@@ -20,10 +21,10 @@ void Enemy::onPrepare(GLfloat dt)
 	m_actor.onPrepare(dt);
 }
 
-void Enemy::onRender(ShaderProgram* shaderProgram)
-{
-	Object::onRender(shaderProgram);
-	m_actor.onRender(shaderProgram);
+void Enemy::onRender()
+{	
+	Object::onRender();
+	m_actor.onRender(m_engine->m_modelProgram);
 }
 
 

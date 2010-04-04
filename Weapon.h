@@ -11,7 +11,7 @@ public:
 	void attack();
 
 	void onPrepare(GLfloat dt);
-	void onRender(ShaderProgram* shaderProgram);	
+	void onRender();	
 
 	~Weapon(void);
 private:

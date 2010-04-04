@@ -2,6 +2,7 @@
 #include <vector>
 #include "Shader.h"
 #include "Utils.h"
+#include "GameEngine.h"
 
 TexturedLandscape::TexturedLandscape(GameEngine* engine) : Object(engine)
 {
@@ -70,7 +71,7 @@ TexturedLandscape::TexturedLandscape(GameEngine* engine) : Object(engine)
 	m_materialProps.setShininess(0.0f);	
 }
 
-void TexturedLandscape::onRender(ShaderProgram *program)
+void TexturedLandscape::onRender()
 {
 	//Render content of vertex buffer
 	glPushMatrix();	
@@ -92,6 +93,9 @@ void TexturedLandscape::onRender(ShaderProgram *program)
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+	ShaderProgram *program = m_engine->m_modelProgram;
+	program->bind();
 
 	program->sendMatrices();
 	program->sendUniform("texture0", 0);

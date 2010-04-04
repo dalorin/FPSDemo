@@ -2,6 +2,7 @@
 #include "Utils.h"
 #include <vector>
 #include "Shader.h"
+#include "GameEngine.h"
 
 SkyBox::SkyBox(GameEngine *engine, 
 			   const char* north, 
@@ -86,7 +87,7 @@ void SkyBox::onPrepare(GLfloat dt)
 {
 }
 
-void SkyBox::onRender(ShaderProgram *program)
+void SkyBox::onRender()
 {
 	glPushMatrix();
 	
@@ -108,9 +109,11 @@ void SkyBox::onRender(ShaderProgram *program)
 	glVertexAttribPointer(2, 2, GL_SHORT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(2);
 	
+	ShaderProgram *program = m_engine->m_skyboxProgram;
+	program->bind();
+
 	program->sendMatrices();
-	program->sendUniform("texture0", 0);
-	program->sendUniform("lerp_value", 0.0f);
+	program->sendUniform("texture0", 0);	
 	program->sendMaterialProps(m_materialProps);
 	
 	for (int i = 0; i < 5; i++)

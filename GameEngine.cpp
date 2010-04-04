@@ -15,16 +15,10 @@
 #include "Weapon.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "ParticleSystem.h"
 
 using namespace std;
 
-GLfloat rotation = 0.0f;
-
-
-GLfloat dtf(GLfloat degrees)
-{
-	return degrees * (GLfloat)M_PI / 180.0f;
-}
 GameEngine::GameEngine(void)
 {
 }
@@ -51,14 +45,18 @@ bool GameEngine::init()
 
 	Fighter *fighter = new Fighter(this);
 	fighter->setScale(1.0f, 1.0f, 1.0f);
-	fighter->setPosition(0.0f, 10.0f, -10.0f);
-	fighter->setAcceleration(0.0f, 0.0f, 0.0f);
+	fighter->setPosition(0.0f, 10.0f, -100.0f);
+	fighter->setAcceleration(0.0f, 0.0f, 0.0f);	
 	m_objects.push_back(fighter);
 
-	Enemy *enemy = new Enemy(this);
-	enemy->setPosition(-280.0f, 23.0f, -100.0f);
-	enemy->setVelocity(1.8f, 0.0f, 0.0f);
-	m_objects.push_back(enemy);
+	for (int i = 0; i < 9; i++)
+	{
+		Enemy *enemy = new Enemy(this);
+		enemy->setPosition(-280.0f + ((GLfloat)i * 70.0f), 23.0f, -400.0f);
+		enemy->setVelocity(0.0f, 0.0f, 1.8f);
+		enemy->adjustYaw(-90.0f);
+		m_objects.push_back(enemy);
+	}
 
 	/*Weapon *weapon = new Weapon(this);
 	weapon->setScale(1.0f, 1.0f, 1.0f);
@@ -83,6 +81,7 @@ bool GameEngine::init()
 	m_modelProgram->bindAttrib(2, "a_TexCoord0");
 	m_modelProgram->bindAttrib(3, "a_Normal");
 	m_modelProgram->bindAttrib(4, "b_Normal");
+	m_modelProgram->bindAttrib(5, "a_Color");
 
 	m_modelProgram->link();	
 		
@@ -101,6 +100,25 @@ bool GameEngine::init()
 	m_hudProgram->bindAttrib(1, "a_TexCoord0");
 
 	m_hudProgram->link();
+
+	// Init skybox shader program.
+	m_skyboxProgram = new ShaderProgram("skybox.vert", "skybox.frag");
+
+	m_skyboxProgram->bindAttrib(0, "a_Vertex");	
+	m_skyboxProgram->bindAttrib(2, "a_TexCoord0");
+
+	m_skyboxProgram->link();
+
+	// Init particle effect shader program.
+	m_particleProgram = new ShaderProgram("particle.vert", "particle.frag");
+
+	m_particleProgram->bindAttrib(0, "a_Vertex");
+	m_particleProgram->bindAttrib(1, "a_Color");
+	m_particleProgram->bindAttrib(2, "b_Color");
+	m_particleProgram->bindAttrib(3, "lerpValue");
+	//m_particleProgram->bindAttrib(4, "a_TexCoord0");
+
+	m_particleProgram->link();
 
 	// Init mouse.
 	SetCursorPos(getWidth() / 2, getHeight() / 2);
@@ -221,9 +239,9 @@ void GameEngine::spawnEntity(EntityType type)
 		Camera *cam = m_cameras[0];
 		Vector3 subject = cam->getSubject();
 		Vector3 subjectRel = cam->getSubjectRelative();
-		Box *bullet = new Box(this, 0.3f);
+		Emitter *bullet = new Emitter(this, 1000, 1.0f, 0.2f, 0.2f, "textures/smoke.tga");
 		bullet->setPosition(subject.x, subject.y, subject.z);		
-		bullet->setVelocity(subjectRel.x * 2.0f, subjectRel.y * 2.0f, subjectRel.z * 2.0f);
+		bullet->setVelocity(subjectRel.x * 5.0f, subjectRel.y * 5.0f, subjectRel.z * 5.0f);
 		m_objects.push_back(bullet);
 	}
 	}
@@ -264,29 +282,45 @@ void GameEngine::render()
 	glDepthMask(0);
 	
 	// Render skybox first.
+	m_skyboxProgram->bind();
+	m_skyboxProgram->sendUniform("light0.ambient", 1.0f, 1.0f, 1.0f, 1.0f);
+	m_skybox->onRender();
+
+	// Re-enable depth buffer writes.
+	glDepthMask(1);
+
+	// Render landscape.
 	m_modelProgram->bind();
 	m_modelProgram->sendUniform("fog_density", 0.01f);
 	m_modelProgram->sendUniform("light0.position", 50.0f, 100.0f, 120.0f, 0.0f);
 	m_modelProgram->sendUniform("light0.ambient", 1.0f, 1.0f, 1.0f, 1.0f);
 	m_modelProgram->sendUniform("light0.diffuse", 0.9f, 0.9f, 0.9f, 1.0f);
 	m_modelProgram->sendUniform("light0.specular", 0.8f, 0.8f, 0.8f, 1.0f);
-	m_skybox->onRender(m_modelProgram);
-
-	// Re-enable depth buffer writes.
-	glDepthMask(1);
-
-	// Render landscape.
-	//m_basicProgram->bind();
-	m_landscape->onRender(m_modelProgram);
+	m_landscape->onRender();
 
 	// Render game entities.
 	//m_modelProgram->bind();
 
 	for (std::vector<Object*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it)
 	{
-		(*it)->onRender(m_modelProgram);
+		(*it)->onRender();
 		(*it)->onPostRender();
 	}
+
+	//DEBUG CODE - Display object positions
+	/*m_basicProgram->bind();
+	glPointSize(10.0f);
+	glBegin(GL_POINTS);
+	for (std::vector<Object*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it)
+	{	
+		glColor3d(1.0, 0.0, 0.0);
+		glVertex3f(
+			(*it)->getPosition().x,
+			(*it)->getPosition().y + 30.0f,
+			(*it)->getPosition().z
+		);
+	}
+	glEnd();*/
 
 	// Once the game world has rendered, we switch to an orthographic projection and draw the HUD.
 	setupOrthoProj();
@@ -294,7 +328,7 @@ void GameEngine::render()
 
 	for (std::vector<Object*>::iterator it = m_HUD.begin(); it != m_HUD.end(); ++it)
 	{
-		(*it)->onRender(m_hudProgram);
+		(*it)->onRender();
 		(*it)->onPostRender();
 	}
 

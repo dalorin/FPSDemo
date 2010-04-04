@@ -299,6 +299,8 @@ void MD2Model::onRender(ShaderProgram *shaderProgram)
 		
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 
+	shaderProgram->bind();
+
 	shaderProgram->sendMatrices();
 	shaderProgram->sendUniform("texture0", 0);
 	shaderProgram->sendUniform("lerp_value", 0.0f);

@@ -1,4 +1,5 @@
 #include "Weapon.h"
+#include "GameEngine.h"
 
 Weapon::Weapon(GameEngine* engine) : Object(engine)
 {
@@ -20,10 +21,10 @@ void Weapon::onPrepare(GLfloat dt)
 	m_model->onPrepare(dt);
 }
 
-void Weapon::onRender(ShaderProgram* shaderProgram)
+void Weapon::onRender()
 {
-	Object::onRender(shaderProgram);
-	m_model->onRender(shaderProgram);
+	Object::onRender();
+	m_model->onRender(m_engine->m_modelProgram);
 }
 
 Weapon::~Weapon(void)

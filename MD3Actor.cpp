@@ -14,18 +14,21 @@ void MD3Actor::load(string modelPath)
 	m_head.load(modelPath + "head.md3");
 	m_upper.load(modelPath + "upper.md3");
 	m_lower.load(modelPath + "lower.md3");
+	m_weapon.load("models/weapons/g_shot.md3");
 
 	m_head.parseSkinFile(modelPath + "head_default.skin");
 	m_upper.parseSkinFile(modelPath + "upper_default.skin");
 	m_lower.parseSkinFile(modelPath + "lower_default.skin");
+	//m_weapon.parseSkinFile("models/weapons/v_shot2_0.skin");
 
 	m_lower.addLink("tag_torso", m_upper);
 	m_upper.addLink("tag_head", m_head);
+	m_upper.addLink("tag_weapon", m_weapon);
 
 	parseAnims(modelPath + "animation.cfg");
 
 	setUpperAnimation(TORSO_STAND);
-	setLowerAnimation(LEGS_RUN);
+	setLowerAnimation(LEGS_WALK);
 }
 
 void MD3Actor::setMaterialProperties(MaterialProps props)
@@ -100,8 +103,7 @@ void MD3Actor::onPrepare(float dt)
 }
 
 void MD3Actor::onRender(ShaderProgram *shaderProgram)
-{
-	glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+{	
 	m_lower.onRender(shaderProgram);
 }
 

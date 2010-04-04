@@ -182,7 +182,7 @@ public:
 	Object(GameEngine* engine); //constructor
 	~Object(); //destructor
 	virtual void onPrepare(GLfloat dt);
-	virtual void onRender(ShaderProgram *shaderProgram);
+	virtual void onRender();
 	virtual void onPostRender();
 
 	void setPosition(GLfloat x, GLfloat y, GLfloat z);
@@ -229,7 +229,7 @@ class Box : public Object
 public:
 	Box(GameEngine* engine, GLfloat length); //constructor
 	void onPrepare(GLfloat dt);
-	void onRender(ShaderProgram *shaderProgram);
+	void onRender();
 private:
 	GLfloat length;
 	GLfloat m_rotation;
@@ -240,7 +240,7 @@ class Crosshair : public Object
 {
 public:
 	Crosshair(GameEngine* engine); //constructor
-	void onRender(ShaderProgram *shaderProgram);	
+	void onRender();	
 private:
 	GLuint m_buffer;
 	GLuint m_texture;

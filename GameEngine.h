@@ -32,6 +32,13 @@ public:
 
 	~GameEngine(void);
 
+	//Shader programs
+	ShaderProgram *m_basicProgram;
+	ShaderProgram *m_modelProgram;
+	ShaderProgram *m_hudProgram;
+	ShaderProgram *m_skyboxProgram;
+	ShaderProgram *m_particleProgram;
+
 private:
 	//Entity vectors
 	std::vector<Object*> m_objects;
@@ -46,11 +53,6 @@ private:
 
 	//Skybox object
 	SkyBox* m_skybox;
-
-	//Shader programs
-	ShaderProgram *m_basicProgram;
-	ShaderProgram *m_modelProgram;
-	ShaderProgram *m_hudProgram;
 
 	GLfloat lightAngle;
 

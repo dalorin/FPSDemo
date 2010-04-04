@@ -6,7 +6,7 @@ class Landscape : public Object
 public:
 	Landscape(GameEngine* engine);
 
-	void onRender(ShaderProgram *program);
+	void onRender();
 
 	~Landscape(void);
 

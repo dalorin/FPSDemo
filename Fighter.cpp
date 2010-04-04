@@ -1,4 +1,5 @@
 #include "Fighter.h"
+#include "GameEngine.h"
 
 class ShaderProgram; // Forward declaration of ShaderProgram class.
 
@@ -22,10 +23,10 @@ void Fighter::onPrepare(GLfloat dt)
 	m_model->onPrepare(dt);
 }
 
-void Fighter::onRender(ShaderProgram* shaderProgram)
+void Fighter::onRender()
 {
-	Object::onRender(shaderProgram);
-	m_model->onRender(shaderProgram);
+	Object::onRender();
+	m_model->onRender(m_engine->m_modelProgram);
 }
 
 Fighter::~Fighter(void)

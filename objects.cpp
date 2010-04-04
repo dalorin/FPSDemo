@@ -3,6 +3,8 @@
 #include <sstream>
 #include "Shader.h"
 #include "targa.h"
+#include "GameEngine.h"
+#include "Utils.h"
 
 Object::Object(GameEngine* engine)
 {
@@ -48,13 +50,13 @@ void Object::onPrepare(GLfloat dt)
 	}
 }
 
-void Object::onRender(ShaderProgram *vertexProgram)
+void Object::onRender()
 {
 	glPushMatrix();	
 	glScalef(this->getScale().x, this->getScale().y, this->getScale().z);
-	glRotatef(getYaw(), 0.0f, 1.0f, 0.0f);
-	glRotatef(getPitch(), 1.0f, 0.0f, 0.0f);
 	glTranslatef(this->getPosition().x, this->getPosition().y, this->getPosition().z);
+	glRotatef(this->getYaw(), 0.0f, 1.0f, 0.0f);
+	glRotatef(this->getPitch(), 1.0f, 0.0f, 0.0f);
 }
 
 void Object::onPostRender()
@@ -272,9 +274,9 @@ void Box::onPrepare(GLfloat dt)
 		
 }
 
-void Box::onRender(ShaderProgram *shaderProgram)
+void Box::onRender()
 {
-	Object::onRender(shaderProgram);
+	Object::onRender();
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
@@ -284,6 +286,9 @@ void Box::onRender(ShaderProgram *shaderProgram)
 	glVertexAttribPointer(1, 4, GL_DOUBLE, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(1);	
 	
+	ShaderProgram *shaderProgram = m_engine->m_basicProgram;
+	shaderProgram->bind();
+
 	shaderProgram->sendMatrices();
 	
 	glDrawArrays(GL_QUADS, 0, 24);
@@ -326,26 +331,13 @@ m_texture(0)
 	glGenBuffers(1, &m_textureCoords);
 	glBindBuffer(GL_ARRAY_BUFFER, m_textureCoords);
 	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLushort), &textureCoords, GL_STATIC_DRAW);
-
-	const char* textureFilename = "crosshair.tga";
-	TargaImage textureImage;
-	if (!textureImage.load(textureFilename))
-	{
-		MessageBox(NULL, "Could not load texture image", "Texture error", MB_ICONERROR | MB_OK);
-	}
-
-	glGenTextures(1, &m_texture);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureImage.getWidth(), textureImage.getHeight(), 
-				 0, GL_RGBA, GL_UNSIGNED_BYTE ,textureImage.getImageData());
-	textureImage.unload();	
+	
+	Utils::loadTexture("crosshair.tga", m_texture);
 }
 
-void Crosshair::onRender(ShaderProgram *shaderProgram)
+void Crosshair::onRender()
 {
-	Object::onRender(shaderProgram);
+	Object::onRender();
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
@@ -354,6 +346,9 @@ void Crosshair::onRender(ShaderProgram *shaderProgram)
 	glBindBuffer(GL_ARRAY_BUFFER, m_textureCoords);
 	glVertexAttribPointer(1, 2, GL_SHORT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(1);
+
+	ShaderProgram *shaderProgram = m_engine->m_hudProgram;
+	shaderProgram->bind();
 
 	shaderProgram->sendMatrices();
 	shaderProgram->sendUniform("texture0", 0);

@@ -6,7 +6,7 @@ class TexturedLandscape : public Object
 public:	
 	TexturedLandscape(GameEngine* engine);
 
-	void onRender(ShaderProgram *program);
+	void onRender();
 
 	~TexturedLandscape(void);
 

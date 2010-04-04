@@ -221,6 +221,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ParticleSystem.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Player.cpp"
 				>
 			</File>
@@ -308,6 +312,10 @@
 			</File>
 			<File
 				RelativePath=".\objects.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ParticleSystem.h"
 				>
 			</File>
 			<File
@@ -402,6 +410,18 @@
 			</File>
 			<File
 				RelativePath=".\model_pixel_lighting.vert"
+				>
+			</File>
+			<File
+				RelativePath=".\particle.frag"
+				>
+			</File>
+			<File
+				RelativePath=".\particle.vert"
+				>
+			</File>
+			<File
+				RelativePath=".\skybox.frag"
 				>
 			</File>
 			<File

@@ -9,7 +9,7 @@ public:
 	Enemy(GameEngine *engine);
 
 	void onPrepare(GLfloat dt);
-	void onRender(ShaderProgram* shaderProgram);
+	void onRender();
 
 	~Enemy(void);
 

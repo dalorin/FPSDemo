@@ -14,7 +14,7 @@ public:
 		   const char* down);
 
 	void onPrepare(GLfloat dt);
-	void onRender(ShaderProgram *program);
+	void onRender();
 
 	~SkyBox(void);
 

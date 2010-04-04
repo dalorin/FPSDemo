@@ -66,6 +66,7 @@ private:
 	MD3Model m_head;
 	MD3Model m_upper;
 	MD3Model m_lower;
+	MD3Model m_weapon;
 
 	Animation m_animations[MAX_ANIMATIONS];
 	AnimationPhase m_lowerAnimPhase;
