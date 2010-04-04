@@ -24,7 +24,9 @@ attribute vec3 b_Vertex; // Input vertex from next animation frame
 attribute vec2 a_TexCoord0; // Input texture coordinate
 attribute vec3 a_Normal; // Input vertex normal
 attribute vec3 b_Normal; // Input vertex normal from next animation frame
+attribute vec4 a_Color; // Input color
 
+varying vec4 color;
 varying vec2 texCoord0; // Output texture coordinate to be interpolated and passed to fragment shader
 varying vec3 normal; // Output lerped normal
 varying vec3 light_pos; // Output light position
@@ -65,5 +67,6 @@ void main(void)
 		
 	//blendFactor = exp2(-fogDensity * length(pos));
 	gl_Position = projection_matrix * pos;
-	texCoord0 = a_TexCoord0;	
+	texCoord0 = a_TexCoord0;
+	color = a_Color;
 }

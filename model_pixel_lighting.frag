@@ -16,6 +16,7 @@ uniform vec4 material_specular;
 uniform vec4 material_emissive;
 uniform float material_shininess;
 
+varying vec4 color; // Input color
 varying vec2 texCoord0; // Input tex coord
 varying vec3 normal; // Input normal
 varying vec3 light_pos; // Input light position
@@ -39,13 +40,13 @@ void main(void)
 	//Calculate angle between normal and light direction.
 	float NdotL = max(dot(N,L), 0.0);
 	
-	vec4 color = vec4(0.0);
+	vec4 final_color = color;
 	
 	//Only perform lighting calculations if the surface is facing toward the light source.
 	if (NdotL > 0.0)
 	{
 		// Add diffuse contribution.
-		color += vertex_diffuse * NdotL;
+		final_color += vertex_diffuse * NdotL;
 		
 		//Calculate and normalize half vector.
 		vec3 HV = normalize(half_vector);
@@ -54,12 +55,12 @@ void main(void)
 		float NdotHV = max(dot(N, HV), 0.0);
 		
 		//Calculate specular component.
-		color += material_specular * light0.specular * pow(NdotHV, material_shininess);		
+		final_color += material_specular * light0.specular * pow(NdotHV, material_shininess);		
 	}
 		
 	//Add ambient component.
-	color += vertex_ambient;
-	gl_FragColor = color * texColor; // Copy color to output
+	final_color += vertex_ambient;
+	gl_FragColor = final_color * texColor; // Copy color to output
 	//vec4 fogColor = vec4(0.5, 0.5, 0.5, 0.5);
 	//gl_FragColor = mix(fogColor, fragColor, blend_factor);
 }
