@@ -92,6 +92,18 @@ struct Vector3
 	}
 };
 
+struct Sphere
+{
+	Vector3 position;
+	GLfloat radius;
+
+	Sphere::Sphere(Vector3 pos, GLfloat rad)
+	{
+		position = pos;
+		radius = rad;
+	}
+};
+
 struct Color
 {
 	Color()
@@ -185,6 +197,8 @@ public:
 	virtual void onRender();
 	virtual void onPostRender();
 
+	virtual void drawBoundingSphere();
+
 	void setPosition(GLfloat x, GLfloat y, GLfloat z);
 	void setPosition(Vector3 position);
 	Vector3 getPosition();
@@ -200,6 +214,9 @@ public:
 
 	virtual void adjustPitch(GLfloat angle);
 	virtual void adjustYaw(GLfloat angle);
+
+	void setPitch(GLfloat angle);
+	void setYaw(GLfloat angle);
 
 	GLfloat getPitch() {return m_pitch;}
 	GLfloat getYaw() {return m_yaw;}
@@ -221,7 +238,9 @@ protected:
 
 	GameEngine* m_engine; // Pointer to engine that spawned object.
 
-	bool m_alive; // If false, engine will delete object. 
+	bool m_alive; // If false, engine will delete object.
+
+	GLUquadricObj *m_quadratic;
 };
 
 class Box : public Object

@@ -6,6 +6,7 @@
 class Player; // Forward declaration of Player class.
 class TexturedLandscape; // Forward declaration of Landscape class.
 class SkyBox; // Forward declaration of Landscape class.
+class Weapon; // Forward declaration of Weapon class.
 
 enum EntityType {LANDSCAPE, BULLET};
 
@@ -44,6 +45,9 @@ private:
 	std::vector<Object*> m_objects;
 	std::vector<Camera*> m_cameras;
 	std::vector<Object*> m_HUD;
+
+	//Weapon object
+	Weapon* m_weapon;
 
 	//Player object
 	Player* m_player;

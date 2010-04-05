@@ -79,6 +79,7 @@ public:
 	void onPrepare(float dt);
 	void onRender(ShaderProgram *shaderProgram);
 	void renderNormals(ShaderProgram *shaderProgram);
+	GLfloat getBoundingSphereRadius();
 	~MD2Model(void);
 
 private:

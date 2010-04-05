@@ -52,16 +52,20 @@ void Object::onPrepare(GLfloat dt)
 
 void Object::onRender()
 {
-	glPushMatrix();	
-	glScalef(this->getScale().x, this->getScale().y, this->getScale().z);
+	glPushMatrix();		
 	glTranslatef(this->getPosition().x, this->getPosition().y, this->getPosition().z);
-	glRotatef(this->getYaw(), 0.0f, 1.0f, 0.0f);
 	glRotatef(this->getPitch(), 1.0f, 0.0f, 0.0f);
+	glRotatef(this->getYaw(), 0.0f, 1.0f, 0.0f);
+	glScalef(this->getScale().x, this->getScale().y, this->getScale().z);
 }
 
 void Object::onPostRender()
 {
 	glPopMatrix();
+}
+
+void Object::drawBoundingSphere()
+{
 }
 
 void Object::setPosition(GLfloat x, GLfloat y, GLfloat z)
@@ -135,6 +139,26 @@ void Object::adjustYaw(GLfloat angle)
 		m_yaw -= 360.0f;
 	else if (m_yaw < 0.0f)
 		m_yaw += 360.0f;
+}
+
+/**
+ * setPitch
+ * Sets pitch to the given angle.
+ * WARNING: Use adjustPitch wherever possible as this method does not limit pitch.
+ **/
+void Object::setPitch(GLfloat angle)
+{
+	m_pitch = angle;
+}
+
+/**
+ * setYaw
+ * Sets yaw to the given angle.
+ * WARNING: Use adjustYaw wherever possible as this method does not limit yaw.
+ **/
+void Object::setYaw(GLfloat angle)
+{
+	m_yaw = angle;
 }
 
 Box::Box(GameEngine* engine, GLfloat length) : Object(engine)

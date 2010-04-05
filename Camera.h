@@ -2,6 +2,7 @@
 #include "objects.h"
 
 class GameEngine; // Forward declaration of GameEngine class.
+class Weapon; // Forward declaration of Weapon class.
 
 class Camera :
 	public Object
@@ -19,10 +20,14 @@ public:
 	void moveBackward();
 	void strafeLeft(GLfloat step);
 	void strafeRight(GLfloat step);
+	void adjustBob(bool forward);
+	GLfloat getBob() { return m_bobValue; }
 	void reposition();
 	Vector3 getSubject();
-	Vector3 getSubjectRelative();
-
+	Vector3 getSubjectRelative();	
+	
 private:
-	Vector3* m_subject;	
+	Vector3* m_subject;
+	bool m_bobUp;
+	GLfloat m_bobValue;
 };

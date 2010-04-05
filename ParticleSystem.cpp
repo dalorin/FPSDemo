@@ -58,13 +58,13 @@ Emitter::Emitter(GameEngine *engine,
 
 	generateParticles();
 
-	for (unsigned int i = 0; i < m_maxParticles; i++)
+	for (int i = 0; i < m_maxParticles; i++)
 	{
 		for (int j = 0; j < 4; j++)
 			m_colors.push_back(m_particles[i]->getStartColor()[j]);
 	}
 
-	for (unsigned int i = 0; i < m_maxParticles; i++)
+	for (int i = 0; i < m_maxParticles; i++)
 	{
 		for (int j = 0; j < 4; j++)
 			m_colors.push_back(m_particles[i]->getEndColor()[j]);
@@ -158,7 +158,11 @@ void Emitter::onRender()
 	glEnable(GL_POINT_SPRITE);
 	glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
 	glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
-	glPointSize(10.0f);
+	//glPointSize(10.0f);
+	glPointParameterf(GL_POINT_SIZE_MIN, 2.0f);
+	glPointParameterf(GL_POINT_SIZE_MAX, 20.0f);
+	GLfloat pointDistAtt[] = {0.001f, 0.05f, 0.0f};
+	glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, pointDistAtt);	
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));

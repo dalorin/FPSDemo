@@ -58,11 +58,11 @@ bool GameEngine::init()
 		m_objects.push_back(enemy);
 	}
 
-	/*Weapon *weapon = new Weapon(this);
-	weapon->setScale(1.0f, 1.0f, 1.0f);
-	weapon->setPosition(mainCamera->getPosition().x + 0.2f, mainCamera->getPosition().y - 0.2f, mainCamera->getPosition().z - 1.0f);
-	weapon->setAcceleration(0.0f, 0.0f, 0.0f);
-	m_objects.push_back(weapon);*/
+	// Set up player weapon.
+	m_weapon = new Weapon(this);		
+	m_weapon->setPosition(0.5f, -1.1f, -2.5f);	
+	m_weapon->adjustYaw(mainCamera->getYaw() + 90.0f);
+	m_weapon->adjustPitch(mainCamera->getPitch() + 3.0f);		
 
 	Crosshair *crosshair = new Crosshair(this);
 	crosshair->setPosition(m_width / 2.0f, m_height / 2.0f, -1.0f);	
@@ -72,8 +72,7 @@ bool GameEngine::init()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	// Init model shader program.
-	//m_modelProgram = new ShaderProgram("model.vert", "model.frag");
+	// Init model shader program.	
 	m_modelProgram = new ShaderProgram("model_pixel_lighting.vert", "model_pixel_lighting.frag");
 	
 	m_modelProgram->bindAttrib(0, "a_Vertex");
@@ -175,10 +174,12 @@ void GameEngine::processInput()
 			break;
 		case VK_LEFT :
 			cam->adjustYaw(1.0f);
+			m_weapon->adjustYaw(1.0f);
 			cam->reposition();
 			break;
 		case VK_RIGHT :
 			cam->adjustYaw(-1.0f);
+			m_weapon->adjustYaw(-1.0f);
 			cam->reposition();
 			break;
 		case 'R' :
@@ -239,8 +240,8 @@ void GameEngine::spawnEntity(EntityType type)
 		Camera *cam = m_cameras[0];
 		Vector3 subject = cam->getSubject();
 		Vector3 subjectRel = cam->getSubjectRelative();
-		Emitter *bullet = new Emitter(this, 1000, 1.0f, 0.2f, 0.2f, "textures/smoke.tga");
-		bullet->setPosition(subject.x, subject.y, subject.z);		
+		Emitter *bullet = new Emitter(this, 100, 1.0f, 0.2f, 0.2f, "textures/smoke.tga");
+		bullet->setPosition(subject.x + 1.0f, subject.y - 1.0f, subject.z);		
 		bullet->setVelocity(subjectRel.x * 5.0f, subjectRel.y * 5.0f, subjectRel.z * 5.0f);
 		m_objects.push_back(bullet);
 	}
@@ -274,8 +275,8 @@ void GameEngine::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Camera *mainCamera;
 	mainCamera = m_cameras[0];
-	gluLookAt((GLdouble)mainCamera->getPosition().x, (GLdouble)mainCamera->getPosition().y, (GLdouble)mainCamera->getPosition().z,
-			  (GLdouble)mainCamera->getSubject().x, (GLdouble)mainCamera->getSubject().y, (GLdouble)mainCamera->getSubject().z,
+	gluLookAt((GLdouble)mainCamera->getPosition().x, (GLdouble)mainCamera->getPosition().y + (GLdouble)mainCamera->getBob(), (GLdouble)mainCamera->getPosition().z,
+			  (GLdouble)mainCamera->getSubject().x, (GLdouble)mainCamera->getSubject().y + (GLdouble)mainCamera->getBob(), (GLdouble)mainCamera->getSubject().z,
 			  0.0, 1.0, 0.0);
 
 	// Disable depth buffer writes before rendering skybox.
@@ -306,6 +307,13 @@ void GameEngine::render()
 		(*it)->onRender();
 		(*it)->onPostRender();
 	}
+	
+	// Draw weapon at static position in front of the camera once the world has been rendered.
+	glLoadIdentity();
+	m_weapon->onRender();
+	m_weapon->onPostRender();
+	
+	//m_weapon->drawBoundingSphere();
 
 	//DEBUG CODE - Display object positions
 	/*m_basicProgram->bind();

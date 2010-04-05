@@ -11,7 +11,9 @@ public:
 	void attack();
 
 	void onPrepare(GLfloat dt);
-	void onRender();	
+	void onRender();
+
+	virtual void drawBoundingSphere();
 
 	~Weapon(void);
 private:

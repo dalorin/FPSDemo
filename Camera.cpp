@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Weapon.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <sstream>
@@ -13,7 +14,8 @@ Camera::Camera(GameEngine* engine) : Object(engine)
 	m_subject = new Vector3(0.0f, 10.0f, 3.0f);
 	setPosition(0.0f, 10.0f, 4.0f);
 	m_pitch = 0.0f;
-	m_yaw = 0.0f;
+	m_yaw = 0.0f;	
+	m_bobValue = 0.0f;
 }
 
 void Camera::setSubject(GLfloat x, GLfloat y, GLfloat z)
@@ -55,6 +57,7 @@ void Camera::resetPitch()
 
 void Camera::moveForward()
 {
+	adjustBob(true);	
 	Vector3 newPos = getPosition() + getSubjectRelative();
 	setPosition(newPos.x, getPosition().y, newPos.z);
 	reposition();
@@ -62,6 +65,7 @@ void Camera::moveForward()
 
 void Camera::moveBackward()
 {
+	adjustBob(false);
 	Vector3 newPos = getPosition() - getSubjectRelative();
 	setPosition(newPos.x, getPosition().y, newPos.z);
 	reposition();
@@ -83,6 +87,21 @@ void Camera::strafeRight(GLfloat step)
 	pos.z -= sinf(degreesToRadians(-m_yaw));
 	setPosition(pos);
 	reposition();
+}
+
+void Camera::adjustBob(bool forward)
+{
+	if (forward)
+	{
+		m_bobValue += m_bobUp ? 0.07f : -0.07f;
+	}
+	else
+	{
+		m_bobValue += m_bobUp ? -0.07f : 0.07f;
+	}
+
+	if (m_bobValue >= 0.42f || m_bobValue <= -0.42f)
+		m_bobUp = !m_bobUp;
 }
 
 Vector3 Camera::getSubject()
@@ -107,7 +126,7 @@ void Camera::reposition()
 	str << "Local X: " << x << " Local Y: " << y << " Local Z: " << z << std::endl;
 	str << "World X: " << subjectWorld.x << " World Y: " << subjectWorld.y << " World Z: " << subjectWorld.z << std::endl;
 	OutputDebugString(str.str().c_str());*/
-	setSubject(subjectWorld.x, subjectWorld.y, subjectWorld.z);
+	setSubject(subjectWorld.x, subjectWorld.y, subjectWorld.z);	
 }
 
 Camera::~Camera(void)

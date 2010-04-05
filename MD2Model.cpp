@@ -283,8 +283,6 @@ void MD2Model::onPrepare(float dt)
 
 void MD2Model::onRender(ShaderProgram *shaderProgram)
 {	
-	glPushMatrix();
-	
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(0);
@@ -313,8 +311,6 @@ void MD2Model::onRender(ShaderProgram *shaderProgram)
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(0);
 
-	glPopMatrix();
-
 	//renderNormals(shaderProgram);
 }
 
@@ -339,6 +335,27 @@ void MD2Model::renderNormals(ShaderProgram *shaderProgram)
 	glEnd();
 
 	glPopMatrix();
+}
+
+GLfloat MD2Model::getBoundingSphereRadius()
+{
+	GLfloat radius = 0.0f;
+
+	for (unsigned int i = 0; i < m_interpolatedKeyFrame.vertices.size(); i++)
+	{
+		Vector3 vec(
+			m_interpolatedKeyFrame.vertices[i].v[0],
+			m_interpolatedKeyFrame.vertices[i].v[1],
+			m_interpolatedKeyFrame.vertices[i].v[2]
+		);
+
+		GLfloat vecLength = vec.length();
+
+		if (vecLength > radius)
+			radius = vecLength;
+	}
+	
+	return radius;
 }
 
 MD2Model::~MD2Model(void)
