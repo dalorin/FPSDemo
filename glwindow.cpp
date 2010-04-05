@@ -85,7 +85,7 @@ bool GLWindow::create(int width, int height, int bpp, bool fullscreen)
     // class registered, so now create our window
     m_hwnd = CreateWindowEx(NULL,                                 // extended style
         "GLClass",                          // class name
-        "BOGLGP - Chapter 2 - Simple OpenGL Application",      // app name
+        "David Schneider - FPS Demo",      // app name
         dwStyle | WS_CLIPCHILDREN |
         WS_CLIPSIBLINGS,
         0, 0,                               // x,y coordinate
