@@ -6,7 +6,7 @@ class Enemy :
 	public Object
 {
 public:
-	Enemy(GameEngine *engine);
+	Enemy(GameEngine *engine, const char* modelPath);
 
 	void onPrepare(GLfloat dt);
 	void onRender();

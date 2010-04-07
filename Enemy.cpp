@@ -1,9 +1,9 @@
 #include "Enemy.h"
 #include "GameEngine.h"
 
-Enemy::Enemy(GameEngine *engine) : Object(engine)
+Enemy::Enemy(GameEngine *engine, const char* modelPath) : Object(engine)
 {
-	m_actor.load("models/players/chaos-marine/");
+	m_actor.load(modelPath);
 
 	//Set material properties.
 	MaterialProps props;
