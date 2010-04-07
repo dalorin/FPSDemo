@@ -12,7 +12,7 @@ GLfloat degreesToRadians(GLfloat degrees)
 Camera::Camera(GameEngine* engine) : Object(engine)
 {
 	m_subject = new Vector3(0.0f, 10.0f, 3.0f);
-	setPosition(0.0f, 10.0f, 4.0f);
+	setPosition(0.0f, 10.0f, 500.0f);
 	m_pitch = 0.0f;
 	m_yaw = 0.0f;	
 	m_bobValue = 0.0f;
