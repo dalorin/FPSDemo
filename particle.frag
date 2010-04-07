@@ -18,7 +18,7 @@ void main(void)
 {		
 	//vec4 texColor = texture2D(texture0, texCoord0.st);
 	vec4 texColor = texture2D(texture0, gl_TexCoord[0].st);
-	if (texColor.a < 0.1)
+	if (texColor.a < 0.1 || color.a < 0.1)
 		discard;
 		
 	vec4 final_color = color;

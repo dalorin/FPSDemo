@@ -29,5 +29,9 @@ void main(void)
 	gl_Position = projection_matrix * pos;
 	texCoord0 = a_TexCoord0;
 	gl_TexCoord[0] = gl_MultiTexCoord0;
-	color = mix(a_Color, b_Color, lerpValue);
+	//Effectively discard particles that are too far away from the viewer.
+	if (length(pos) > 500.0)
+		color = vec4(0.0);
+	else
+		color = mix(a_Color, b_Color, lerpValue);
 }
