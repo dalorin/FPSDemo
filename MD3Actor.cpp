@@ -14,7 +14,7 @@ void MD3Actor::load(string modelPath)
 	m_head.load(modelPath + "head.md3");
 	m_upper.load(modelPath + "upper.md3");
 	m_lower.load(modelPath + "lower.md3");
-	m_weapon.load("models/weapons/g_shot.md3");
+	//m_weapon.load("models/weapons/g_shot.md3");
 
 	m_head.parseSkinFile(modelPath + "head_default.skin");
 	m_upper.parseSkinFile(modelPath + "upper_default.skin");
@@ -23,7 +23,7 @@ void MD3Actor::load(string modelPath)
 
 	m_lower.addLink("tag_torso", m_upper);
 	m_upper.addLink("tag_head", m_head);
-	m_upper.addLink("tag_weapon", m_weapon);
+	//m_upper.addLink("tag_weapon", m_weapon);
 
 	parseAnims(modelPath + "animation.cfg");
 
