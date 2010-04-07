@@ -46,14 +46,43 @@ bool GameEngine::init()
 	Fighter *fighter = new Fighter(this);
 	fighter->setScale(1.0f, 1.0f, 1.0f);
 	fighter->setPosition(0.0f, 10.0f, -100.0f);
-	fighter->setAcceleration(0.0f, 0.0f, 0.0f);	
+	fighter->setAcceleration(0.0f, 0.0f, 0.0f);
 	m_objects.push_back(fighter);
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		Enemy *enemy = new Enemy(this);
-		enemy->setPosition(-280.0f + ((GLfloat)i * 70.0f), 23.0f, -400.0f);
+		Enemy *enemy = new Enemy(this, "models/players/chaos-marine/");
+		enemy->setPosition(-300.0f + ((GLfloat)i * 70.0f), 23.0f, -500.0f);
 		enemy->setVelocity(0.0f, 0.0f, 1.8f);
+		enemy->adjustYaw(-90.0f);
+		m_objects.push_back(enemy);
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		Enemy *enemy = new Enemy(this, "models/players/chaos-marine/");
+		enemy->setPosition(300.0f - ((GLfloat)i * 70.0f), 23.0f, -500.0f);
+		enemy->setVelocity(0.0f, 0.0f, 1.8f);
+		enemy->adjustYaw(-90.0f);
+		m_objects.push_back(enemy);
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		Enemy *enemy = new Enemy(this, "models/players/varge/");
+		enemy->setPosition(-300.0f + ((GLfloat)i * 70.0f), 16.0f, -400.0f);
+		enemy->setVelocity(0.0f, 0.0f, 1.8f);
+		enemy->setScale(0.6f, 0.6f, 0.6f);
+		enemy->adjustYaw(-90.0f);
+		m_objects.push_back(enemy);
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		Enemy *enemy = new Enemy(this, "models/players/varge/");
+		enemy->setPosition(300.0f - ((GLfloat)i * 70.0f), 16.0f, -400.0f);
+		enemy->setVelocity(0.0f, 0.0f, 1.8f);
+		enemy->setScale(0.6f, 0.6f, 0.6f);
 		enemy->adjustYaw(-90.0f);
 		m_objects.push_back(enemy);
 	}
@@ -240,9 +269,9 @@ void GameEngine::spawnEntity(EntityType type)
 		Camera *cam = m_cameras[0];
 		Vector3 subject = cam->getSubject();
 		Vector3 subjectRel = cam->getSubjectRelative();
-		Emitter *bullet = new Emitter(this, 100, 1.0f, 0.2f, 0.2f, "textures/smoke.tga");
-		bullet->setPosition(subject.x + 1.0f, subject.y - 1.0f, subject.z);		
-		bullet->setVelocity(subjectRel.x * 5.0f, subjectRel.y * 5.0f, subjectRel.z * 5.0f);
+		Emitter *bullet = new Emitter(this, 100, 0.3f, 0.15f, 0.05f, "textures/tracer.tga");
+		bullet->setPosition(subject.x + 1.0f, subject.y - 1.0f, subject.z - 4.0f);		
+		bullet->setVelocity(subjectRel.x * 7.0f, subjectRel.y * 7.0f, subjectRel.z * 7.0f);
 		m_objects.push_back(bullet);
 	}
 	}
@@ -405,4 +434,5 @@ GameEngine::~GameEngine(void)
 	delete m_basicProgram;
 	delete m_modelProgram;
 	delete m_hudProgram;
+	delete m_particleProgram;
 }
