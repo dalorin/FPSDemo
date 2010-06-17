@@ -29,6 +29,11 @@ Object::~Object()
 	delete m_acceleration;
 }
 
+const char* Object::getType()
+{
+	return "Object";
+}
+
 void Object::onPrepare(GLfloat dt)
 {	
 	this->setVelocity(
@@ -161,13 +166,75 @@ void Object::setYaw(GLfloat angle)
 	m_yaw = angle;
 }
 
-Box::Box(GameEngine* engine, GLfloat length) : Object(engine)
+SimpleBox* Object::getCollider()
 {
-	this->length = length;
-	m_rotation = 0.0f;
+	//TODO implement default collider
+	return new SimpleBox(5.0f);
+}
 
-	GLfloat neg_length = -1.0f * length;
-	
+SimpleBox::SimpleBox(GLfloat length)
+{
+	GLfloat hl = length / 2.0f;
+	initBox(-hl, hl, -hl, hl, -hl, hl);
+}
+
+SimpleBox::SimpleBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2)
+{
+	initBox(x1, x2, y1, y2, z1, z2);
+}
+
+void SimpleBox::initBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2)
+{
+	m_x1 = x1;
+	m_y1 = y1;
+	m_z1 = z1;
+	m_x2 = x2;
+	m_y2 = y2;
+	m_z2 = z2;
+}
+
+/** 
+ * getVertices
+ * Build and return a vector containing the object's vertices.
+ **/
+std::vector<Vector3*> SimpleBox::getVertices(Vector3 translation)
+{
+	std::vector<Vector3*> vertices;
+	vertices.push_back(new Vector3(m_x2 + translation.x, m_y2 + translation.y, m_z2 + translation.z));
+	vertices.push_back(new Vector3(m_x1 + translation.x, m_y2 + translation.y, m_z2 + translation.z));
+	vertices.push_back(new Vector3(m_x1 + translation.x, m_y1 + translation.y, m_z2 + translation.z));
+	vertices.push_back(new Vector3(m_x2 + translation.x, m_y1 + translation.y, m_z2 + translation.z));	
+	vertices.push_back(new Vector3(m_x2 + translation.x, m_y2 + translation.y, m_z1 + translation.z));
+	vertices.push_back(new Vector3(m_x2 + translation.x, m_y1 + translation.y, m_z1 + translation.z));
+	vertices.push_back(new Vector3(m_x1 + translation.x, m_y1 + translation.y, m_z1 + translation.z));
+	vertices.push_back(new Vector3(m_x1 + translation.x, m_y2 + translation.y, m_z1 + translation.z));
+
+	return vertices;
+}
+
+Box::Box(GameEngine* engine, GLfloat length)
+: SimpleBox(length),
+  Object(engine)
+{
+	initBox();
+}
+
+Box::Box(GameEngine* engine, GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2)
+: SimpleBox(x1, x2, y1, y2, z1, z2),
+  Object(engine)
+{
+	initBox();
+}
+
+Box::Box(GameEngine* engine, SimpleBox box)
+: SimpleBox(box),
+  Object(engine)
+{
+	initBox();
+}
+
+void Box::initBox()
+{
 	GLdouble colorArray[] = {
 		1.0, 0.0, 0.0, 1.0,
 		0.0, 1.0, 0.0, 1.0,
@@ -201,40 +268,40 @@ Box::Box(GameEngine* engine, GLfloat length) : Object(engine)
 	//Front
 	GLfloat vertexArray[] = {
 		//Front
-		length, length, length,
-		neg_length, length, length,
-		neg_length, neg_length, length,
-		length, neg_length, length,
+		m_x2, m_y2, m_z2,
+		m_x1, m_y2, m_z2,
+		m_x1, m_y1, m_z2,
+		m_x2, m_y1, m_z2,
 	
 		//Back
-		length, length, neg_length,
-		length, neg_length, neg_length,
-		neg_length, neg_length, neg_length,
-		neg_length, length, neg_length,
+		m_x2, m_y2, m_z1,
+		m_x2, m_y1, m_z1,
+		m_x1, m_y1, m_z1,
+		m_x1, m_y2, m_z1,
 		
 		//Left
-		neg_length, length, length,
-		neg_length, length, neg_length,
-		neg_length, neg_length, neg_length,
-		neg_length, neg_length, length,
+		m_x1, m_y2, m_z2,
+		m_x1, m_y2, m_z1,
+		m_x1, m_y1, m_z1,
+		m_x1, m_y1, m_z2,
 		
 		//Right
-		length, length, neg_length,
-		length, length, length,
-		length, neg_length, length,
-		length, neg_length, neg_length,
+		m_x2, m_y2, m_z1,
+		m_x2, m_y2, m_z2,
+		m_x2, m_y1, m_z2,
+		m_x2, m_y1, m_z1,
 		
 		//Top
-		length, length, neg_length,
-		neg_length, length, neg_length,
-		neg_length, length, length,
-		length, length, length,
+		m_x2, m_y2, m_z1,
+		m_x1, m_y2, m_z1,
+		m_x1, m_y2, m_z2,
+		m_x2, m_y2, m_z2,
 		
 		//Bottom
-		length, neg_length, length,
-		neg_length, neg_length, length,
-		neg_length, neg_length, neg_length,
-		length, neg_length, neg_length,
+		m_x2, m_y1, m_z2,
+		m_x1, m_y1, m_z2,
+		m_x1, m_y1, m_z1,
+		m_x2, m_y1, m_z1,
 	};
 
 	for (int i = 0; i < 72; ++i)
@@ -252,50 +319,6 @@ Box::Box(GameEngine* engine, GLfloat length) : Object(engine)
 void Box::onPrepare(GLfloat dt)
 {
 	Object::onPrepare(dt);
-
-	/*m_rotation += dt * 250.0f;
-	if (m_rotation >= 360.0f)
-		m_rotation = 0.0f;*/
-
-	/*	
-	glBegin(GL_QUADS);
-	//Front
-	glVertex3f(length, length, length);
-	glVertex3f(neg_length, length, length);
-	glVertex3f(neg_length, neg_length, length);
-	glVertex3f(length, neg_length, length);
-
-	//Back
-	glVertex3f(length, length, neg_length);
-	glVertex3f(length, neg_length, neg_length);
-	glVertex3f(neg_length, neg_length, neg_length);
-	glVertex3f(neg_length, length, neg_length);
-	
-	//Left
-	glVertex3f(neg_length, length, length);
-	glVertex3f(neg_length, length, neg_length);
-	glVertex3f(neg_length, neg_length, neg_length);
-	glVertex3f(neg_length, neg_length, length);
-	
-	//Right
-	glVertex3f(length, length, neg_length);
-	glVertex3f(length, length, length);
-	glVertex3f(length, neg_length, length);
-	glVertex3f(length, neg_length, neg_length);
-	
-	//Top
-	glVertex3f(length, length, neg_length);
-	glVertex3f(neg_length, length, neg_length);
-	glVertex3f(neg_length, length, length);
-	glVertex3f(length, length, length);
-	
-	//Bottom
-	glVertex3f(length, neg_length, length);
-	glVertex3f(neg_length, neg_length, length);
-	glVertex3f(neg_length, neg_length, neg_length);
-	glVertex3f(length, neg_length, neg_length);
-	glEnd();*/
-		
 }
 
 void Box::onRender()
@@ -308,7 +331,7 @@ void Box::onRender()
 	
 	glBindBuffer(GL_ARRAY_BUFFER, m_colorBuffer);
 	glVertexAttribPointer(1, 4, GL_DOUBLE, GL_FALSE, 0, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(1);	
+	glEnableVertexAttribArray(1);
 	
 	ShaderProgram *shaderProgram = m_engine->m_basicProgram;
 	shaderProgram->bind();

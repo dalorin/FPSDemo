@@ -17,6 +17,11 @@ Fighter::Fighter(GameEngine* engine) : Object(engine)
 	m_model->setMaterialProperties(props);
 }
 
+const char* Fighter::getType()
+{
+	return "Fighter";
+}
+
 void Fighter::onPrepare(GLfloat dt)
 {
 	Object::onPrepare(dt);

@@ -21,6 +21,11 @@ Particle::Particle(GameEngine *engine, GLuint texture, GLfloat lifetime) :
 	m_endColor[3] = 0.8f;
 }
 
+const char* Particle::getType()
+{
+	return "Particle";
+}
+
 void Particle::onPrepare(GLfloat dt)
 {
 	Object::onPrepare(dt);
@@ -55,6 +60,12 @@ Emitter::Emitter(GameEngine *engine,
 	glGenBuffers(1, &m_colorBufferB);
 	glGenBuffers(1, &m_lerpValueBuffer);
 	Utils::loadTexture(textureFilename, m_texture);
+}
+
+
+const char* Emitter::getType()
+{
+	return "Emitter";
 }
 
 /**
@@ -214,10 +225,10 @@ void Emitter::onRender()
 	shaderProgram->bind();
 	shaderProgram->sendMatrices();
 	//Draw emitter (debug)
-	glBegin(GL_POINTS);
+	/*glBegin(GL_POINTS);
 		glColor3d(0.0, 1.0, 0.0);
 		glVertex3f(m_position->x, m_position->y, m_position->z);
-	glEnd();
+	glEnd();*/
 }
 
 Emitter::~Emitter(void)

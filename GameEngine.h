@@ -62,4 +62,6 @@ private:
 
 	int m_width;
 	int m_height;
+
+	static int colCount;
 };

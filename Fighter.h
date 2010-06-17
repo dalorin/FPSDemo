@@ -10,6 +10,8 @@ class Fighter : public Object
 public:
 	Fighter(GameEngine* engine);
 
+	const char* getType();
+
 	void onPrepare(GLfloat dt);
 	void onRender();
 

@@ -183,6 +183,18 @@ void MD3Model::setAnimationParams(GLuint startFrame, GLuint endFrame, GLuint fps
 	m_nextFrame = m_startFrame;
 }
 
+SimpleBox* MD3Model::getCollider()
+{
+	// Build bounding box from frame min and max bounds.
+	return new SimpleBox(m_frames[m_currentFrame].minBounds.v[0],
+						 m_frames[m_currentFrame].maxBounds.v[0],
+						 m_frames[m_currentFrame].minBounds.v[1],
+						 m_frames[m_currentFrame].maxBounds.v[1],
+						 m_frames[m_currentFrame].minBounds.v[2],
+						 m_frames[m_currentFrame].maxBounds.v[2]
+						 );
+}
+
 void MD3Model::onPrepare(float dt)
 {
 	float oneOverFPS = 1.0f/(float)m_fps;
@@ -228,6 +240,7 @@ void MD3Model::drawModel(ShaderProgram *shaderProgram)
 			
 		glBindTexture(GL_TEXTURE_2D, m_textures[m_surfaces[i].header.name]);
 
+		shaderProgram->bind();
 		shaderProgram->sendMatrices();
 		shaderProgram->sendUniform("texture0", 0);		
 		shaderProgram->sendUniform("lerp_value", m_lerpValue);

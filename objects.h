@@ -61,6 +61,16 @@ struct Vector3
 		return ret;
 	}
 
+	Vector3 Vector3::operator-()
+	{
+		Vector3 ret;
+		ret.x = -x;
+		ret.y = -y;
+		ret.z = -z;
+
+		return ret;
+	}
+
 	Vector3 Vector3::operator*(const GLfloat &multiple)
 	{
 		Vector3 ret;
@@ -89,6 +99,11 @@ struct Vector3
 		ret.z = (x * otherVector.y) - (y * otherVector.x);
 
 		return ret;
+	}
+
+	GLfloat Vector3::dot(Vector3 &otherVector)
+	{
+		return (this->x * otherVector.x) + (this->y * otherVector.y) + (this->z * otherVector.z);
 	}
 };
 
@@ -188,11 +203,35 @@ private:
 	GLfloat m_shininess;
 };
 
+class SimpleBox
+{
+public:
+	SimpleBox(GLfloat length); //constructor
+	SimpleBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2); //constructor for boxes with non-uniform edge length
+
+	void initBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2);
+
+	GLfloat getX1() {return m_x1;}
+	GLfloat getY1() {return m_y1;}
+	GLfloat getZ1() {return m_z1;}
+	GLfloat getX2() {return m_x2;}
+	GLfloat getY2() {return m_y2;}
+	GLfloat getZ2() {return m_z2;}
+
+	std::vector<Vector3*> getVertices(Vector3 translation);
+
+protected:
+	GLfloat m_x1, m_y1, m_z1, m_x2, m_y2, m_z2;
+};
+
 class Object
 {
 public:
 	Object(GameEngine* engine); //constructor
 	~Object(); //destructor
+
+	virtual const char* getType();
+
 	virtual void onPrepare(GLfloat dt);
 	virtual void onRender();
 	virtual void onPostRender();
@@ -220,7 +259,11 @@ public:
 
 	GLfloat getPitch() {return m_pitch;}
 	GLfloat getYaw() {return m_yaw;}
+
+	void setAlive(bool alive) {m_alive = alive;}
 	bool isAlive() {return m_alive;}
+	
+	virtual SimpleBox* getCollider();
 
 protected:
 	Vector3* m_position;
@@ -241,17 +284,25 @@ protected:
 	bool m_alive; // If false, engine will delete object.
 
 	GLUquadricObj *m_quadratic;
+
+	// Pointer to another object used when detecting collisions.
+	// Usually a bounding box or sphere. Could be a pointer to the object itself.
+	// At the moment this has to be a SimpleBox.
+	SimpleBox* m_collider;
 };
 
-class Box : public Object
+class Box : public Object, public SimpleBox
 {
 public:
 	Box(GameEngine* engine, GLfloat length); //constructor
+	Box(GameEngine* engine, GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2); //constructor for boxes with non-uniform edge length
+	Box(GameEngine* engine, SimpleBox box); //constructor from SimpleBox
+	
+	void initBox();
+
 	void onPrepare(GLfloat dt);
 	void onRender();
 private:
-	GLfloat length;
-	GLfloat m_rotation;
 	GLuint m_vertexBuffer, m_colorBuffer;
 };
 

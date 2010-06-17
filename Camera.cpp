@@ -3,6 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <sstream>
+#include "CollisionDetection.h"
 
 GLfloat degreesToRadians(GLfloat degrees)
 {
@@ -16,6 +17,11 @@ Camera::Camera(GameEngine* engine) : Object(engine)
 	m_pitch = 0.0f;
 	m_yaw = 0.0f;	
 	m_bobValue = 0.0f;
+}
+
+const char* Camera::getType()
+{
+	return "Camera";
 }
 
 void Camera::setSubject(GLfloat x, GLfloat y, GLfloat z)
@@ -58,7 +64,7 @@ void Camera::resetPitch()
 void Camera::moveForward()
 {
 	adjustBob(true);	
-	Vector3 newPos = getPosition() + getSubjectRelative();
+	Vector3 newPos = getPosition() + getSubjectRelative();	
 	setPosition(newPos.x, getPosition().y, newPos.z);
 	reposition();
 }

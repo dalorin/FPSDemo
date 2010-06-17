@@ -8,6 +8,8 @@ class Particle :
 public:
 	Particle(GameEngine *engine, GLuint texture, GLfloat lifetime);	
 
+	const char* getType();
+
 	bool isAlive();
 	GLuint getTexture() { return m_texture; }
 	GLdouble* getStartColor() { return m_startColor; }
@@ -36,6 +38,8 @@ public:
 			GLfloat lifetimeSpread, 
 			GLfloat velocitySpread,
 			const char* textureFilename);
+
+	const char* getType();
 
 	GLfloat getRandomValue(GLfloat mean, GLfloat spread);
 

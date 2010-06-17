@@ -99,6 +99,9 @@ public:
 	void setMaterialProperties(MaterialProps props);
 	void setAnimationParams(GLuint startFrame, GLuint endFrame, GLuint fps);
 	//void setAnimationPhase(MD3::AnimationPhase phase);
+
+	SimpleBox* getCollider();
+
 	void drawModel(ShaderProgram *shaderProgram);
 	void onPrepare(float dt);
 	void onRender(ShaderProgram *shaderProgram);

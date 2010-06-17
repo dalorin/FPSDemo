@@ -16,8 +16,11 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "ParticleSystem.h"
+#include "CollisionDetection.h"
 
 using namespace std;
+
+int GameEngine::colCount = 0;
 
 GameEngine::GameEngine(void)
 {
@@ -49,7 +52,7 @@ bool GameEngine::init()
 	fighter->setAcceleration(0.0f, 0.0f, 0.0f);
 	m_objects.push_back(fighter);
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 3; i < 4; i++)
 	{
 		Enemy *enemy = new Enemy(this, "models/players/chaos-marine/");
 		enemy->setPosition(-300.0f + ((GLfloat)i * 70.0f), 23.0f, -500.0f);
@@ -58,7 +61,7 @@ bool GameEngine::init()
 		m_objects.push_back(enemy);
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 0; i++)
 	{
 		Enemy *enemy = new Enemy(this, "models/players/chaos-marine/");
 		enemy->setPosition(300.0f - ((GLfloat)i * 70.0f), 23.0f, -500.0f);
@@ -67,7 +70,7 @@ bool GameEngine::init()
 		m_objects.push_back(enemy);
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 0; i++)
 	{
 		Enemy *enemy = new Enemy(this, "models/players/varge/");
 		enemy->setPosition(-300.0f + ((GLfloat)i * 70.0f), 16.0f, -400.0f);
@@ -77,7 +80,7 @@ bool GameEngine::init()
 		m_objects.push_back(enemy);
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 0; i++)
 	{
 		Enemy *enemy = new Enemy(this, "models/players/varge/");
 		enemy->setPosition(300.0f - ((GLfloat)i * 70.0f), 16.0f, -400.0f);
@@ -282,19 +285,53 @@ void GameEngine::prepare(float dt)
 	// Process keyboard and mouse button input.
 	processInput();
 	processMouseInput();
-	std::vector<Object*>::iterator it = m_objects.begin();
-	while (it != m_objects.end())
+	std::vector<Object*>::iterator obj = m_objects.begin();
+	while (obj != m_objects.end())
 	{
-		(*it)->onPrepare(dt);
-		if (!(*it)->isAlive())
+		(*obj)->onPrepare(dt);
+		if (!(*obj)->isAlive())
 		{
-			delete *it;
-			it = m_objects.erase(it);
+			delete *obj;
+			obj = m_objects.erase(obj);
 		}
 		else
 		{
-			++it;
-		}
+			std::vector<Object*>::iterator obj2 = m_objects.begin();
+			while (obj2 != m_objects.end())
+			//while (false)
+			{
+				if (*obj != *obj2)
+				{
+					SATResult res = CollisionDetection::detectCollision(*(*obj), *(*obj2));
+					if (res.intersect)
+					{
+						if (strcmp((*obj)->getType(), "Emitter") == 0)
+						{
+							(*obj)->setAlive(false);
+							if (strcmp((*obj2)->getType(), "Enemy") == 0)
+							{
+								Enemy* enemy = (Enemy*)*obj2;
+								enemy->getActor().setLowerAnimation(AnimationPhase::BOTH_DEATH1);
+								enemy->getActor().setUpperAnimation(AnimationPhase::BOTH_DEATH1);
+							}
+						}
+						/*std::stringstream str;
+						str << colCount << " Object collision occurred between " << (*obj)->getType() << " and " << (*obj2)->getType() << "!" << std::endl;
+						OutputDebugString(str.str().c_str());
+						colCount++;*/
+						// Object 1 has collided with Object 2
+					}
+					else if (res.willIntersect)
+					{
+						//OutputDebugString("Object collision will occur!\n");
+						// Object 1 will collide with `Object 2
+					}
+				}
+				++obj2;
+			}
+
+			++obj;
+		}		
 	}
 }
 
@@ -333,8 +370,15 @@ void GameEngine::render()
 
 	for (std::vector<Object*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it)
 	{
+		m_modelProgram->bind();
 		(*it)->onRender();
 		(*it)->onPostRender();
+
+		//DEBUG CODE - Display bounding boxes
+		/*SimpleBox& c = *((*it)->getCollider());
+		Box col(this, c);
+		col.setPosition((*it)->getPosition().x, (*it)->getPosition().y, (*it)->getPosition().z);
+		col.onRender();*/
 	}
 	
 	// Draw weapon at static position in front of the camera once the world has been rendered.

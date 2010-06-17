@@ -11,6 +11,8 @@ public:
 	Camera(GameEngine* engine);
 	~Camera(void);
 
+	const char* getType();
+
 	void setSubject(GLfloat x, GLfloat y, GLfloat z);
 	void adjustPitch(GLfloat angle);
 	void adjustYaw(GLfloat angle);
