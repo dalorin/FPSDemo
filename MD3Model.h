@@ -98,7 +98,7 @@ public:
 
 	void setMaterialProperties(MaterialProps props);
 	void setAnimationParams(GLuint startFrame, GLuint endFrame, GLuint fps);
-	//void setAnimationPhase(MD3::AnimationPhase phase);
+	bool hasAnimationFinished();
 
 	SimpleBox* getCollider();
 
@@ -119,6 +119,7 @@ private:
 	GLuint m_fps;
 	float m_timeCount;
 	float m_lerpValue;
+	bool m_animationFinished;
 
 	MD3::MD3Header m_header;
 

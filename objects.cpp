@@ -19,6 +19,8 @@ Object::Object(GameEngine* engine)
 	m_engine = engine;
 
 	m_alive = true;
+	m_can_delete = false;
+	m_time_since_death = 0.0f;
 }
 
 Object::~Object()
@@ -36,22 +38,32 @@ const char* Object::getType()
 
 void Object::onPrepare(GLfloat dt)
 {	
-	this->setVelocity(
-			this->getVelocity().x + this->getAcceleration().x,
-			this->getVelocity().y + this->getAcceleration().y,
-			this->getVelocity().z + this->getAcceleration().z
-		);
-	this->setPosition(
-			this->getPosition().x + this->getVelocity().x,
-			this->getPosition().y + this->getVelocity().y,
-			this->getPosition().z + this->getVelocity().z
-		);	
-	//Check if object has left the game area
-	if (this->getPosition().x < -1000.0f || this->getPosition().x > 1000.0f ||
-		this->getPosition().y < -10.0f || this->getPosition().y > 1000.0f ||
-		this->getPosition().z < -1000.0f || this->getPosition().z > 1000.0f)
+	if (!isAlive())
 	{
-		m_alive = false;
+		m_time_since_death += dt;
+		if (m_time_since_death >= 10.0f)
+			setDelete(true);
+	}
+	else
+	{
+		this->setVelocity(
+				this->getVelocity().x + this->getAcceleration().x,
+				this->getVelocity().y + this->getAcceleration().y,
+				this->getVelocity().z + this->getAcceleration().z
+			);
+		this->setPosition(
+				this->getPosition().x + this->getVelocity().x,
+				this->getPosition().y + this->getVelocity().y,
+				this->getPosition().z + this->getVelocity().z
+			);	
+		//Check if object has left the game area
+		if (this->getPosition().x < -1000.0f || this->getPosition().x > 1000.0f ||
+			this->getPosition().y < -10.0f || this->getPosition().y > 1000.0f ||
+			this->getPosition().z < -1000.0f || this->getPosition().z > 1000.0f)
+		{
+			setAlive(false);
+			setDelete(true);
+		}
 	}
 }
 
@@ -109,6 +121,11 @@ void Object::setVelocity(GLfloat x, GLfloat y, GLfloat z)
 	m_velocity->z = z;
 }
 
+void Object::setVelocity(Vector3 velocity)
+{
+	*m_velocity = velocity;
+}
+
 Vector3 Object::getVelocity()
 {
 	return *m_velocity;
@@ -119,6 +136,11 @@ void Object::setAcceleration(GLfloat x, GLfloat y, GLfloat z)
 	m_acceleration->x = x;
 	m_acceleration->y = y;
 	m_acceleration->z = z;
+}
+
+void Object::setAcceleration(Vector3 acceleration)
+{
+	*m_acceleration = acceleration;
 }
 
 Vector3 Object::getAcceleration()
@@ -164,6 +186,11 @@ void Object::setPitch(GLfloat angle)
 void Object::setYaw(GLfloat angle)
 {
 	m_yaw = angle;
+}
+
+void Object::kill()
+{
+	m_alive = false;
 }
 
 SimpleBox* Object::getCollider()

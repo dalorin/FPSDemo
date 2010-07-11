@@ -16,6 +16,8 @@ public:
 	GLdouble* getEndColor() { return m_endColor; }
 	GLfloat getElapsedPerc() { return m_elapsed / m_lifetime; }
 
+	bool collides() {return false;}
+
 	void onPrepare(GLfloat dt);
 
 	~Particle();

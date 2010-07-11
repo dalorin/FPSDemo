@@ -17,6 +17,7 @@
 #include <math.h>
 #include "ParticleSystem.h"
 #include "CollisionDetection.h"
+#include "Utils.h"
 
 using namespace std;
 
@@ -52,7 +53,7 @@ bool GameEngine::init()
 	fighter->setAcceleration(0.0f, 0.0f, 0.0f);
 	m_objects.push_back(fighter);
 
-	for (int i = 3; i < 4; i++)
+	/*for (int i = 0; i < 4; i++)
 	{
 		Enemy *enemy = new Enemy(this, "models/players/chaos-marine/");
 		enemy->setPosition(-300.0f + ((GLfloat)i * 70.0f), 23.0f, -500.0f);
@@ -70,7 +71,7 @@ bool GameEngine::init()
 		m_objects.push_back(enemy);
 	}
 
-	for (int i = 0; i < 0; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		Enemy *enemy = new Enemy(this, "models/players/varge/");
 		enemy->setPosition(-300.0f + ((GLfloat)i * 70.0f), 16.0f, -400.0f);
@@ -88,6 +89,15 @@ bool GameEngine::init()
 		enemy->setScale(0.6f, 0.6f, 0.6f);
 		enemy->adjustYaw(-90.0f);
 		m_objects.push_back(enemy);
+	}*/
+
+	for (int i = 0; i < 5; i++)
+	{
+		GLfloat x_shift = fmod((GLfloat)rand(), 600);
+		Vector3 position(-300.0f + x_shift, 23.0f, -250.0f);
+		Vector3 velocity;
+		Vector3 acceleration;
+		spawnEntity(CHAOS_MARINE, position, velocity, acceleration);
 	}
 
 	// Set up player weapon.
@@ -263,20 +273,40 @@ void GameEngine::processMouseInput()
 	SetCursorPos(getWidth() / 2, getHeight() / 2);
 }
 
-void GameEngine::spawnEntity(EntityType type)
+Camera* GameEngine::getCamera()
+{
+	return m_cameras[0];
+}
+
+Vector3 GameEngine::getCameraPos()
+{
+	return m_cameras[0]->getPosition();
+}
+
+void GameEngine::spawnEntity(EntityType type, Vector3 position, Vector3 velocity, Vector3 acceleration)
 {
 	switch(type)
 	{
 	case BULLET :
-	{
-		Camera *cam = m_cameras[0];
-		Vector3 subject = cam->getSubject();
-		Vector3 subjectRel = cam->getSubjectRelative();
-		Emitter *bullet = new Emitter(this, 100, 0.3f, 0.15f, 0.05f, "textures/tracer.tga");
-		bullet->setPosition(subject.x + 1.0f, subject.y - 1.0f, subject.z - 4.0f);		
-		bullet->setVelocity(subjectRel.x * 7.0f, subjectRel.y * 7.0f, subjectRel.z * 7.0f);
+		{		
+		Emitter *bullet = new Emitter(this, 5, 0.3f, 0.15f, 0.05f, "textures/tracer.tga");
+		bullet->setPosition(position);
+		bullet->setVelocity(velocity);
+		bullet->setAcceleration(acceleration);		
 		m_objects.push_back(bullet);
-	}
+		break;
+		}
+	case CHAOS_MARINE :
+		{
+		Enemy *enemy = new Enemy(this, "models/players/chaos-marine/");		
+		enemy->setPosition(position);
+		Vector3 camPos = getCameraPos();
+		//enemy->setVelocity(camPos.x, 0.0f, camPos.z);		
+		m_objects.push_back(enemy);
+		break;
+		}
+	case VARGE :
+		break;
 	}
 }
 
@@ -289,30 +319,31 @@ void GameEngine::prepare(float dt)
 	while (obj != m_objects.end())
 	{
 		(*obj)->onPrepare(dt);
-		if (!(*obj)->isAlive())
+		if ((*obj)->canDelete())
 		{
 			delete *obj;
 			obj = m_objects.erase(obj);
 		}
-		else
-		{
-			std::vector<Object*>::iterator obj2 = m_objects.begin();
+		else if ((*obj)->collides())
+		{			
+			std::vector<Object*>::iterator obj2 = obj;
 			while (obj2 != m_objects.end())
 			//while (false)
 			{
-				if (*obj != *obj2)
-				{
+				if (*obj != *obj2 && (*obj2)->collides())
+				{					
 					SATResult res = CollisionDetection::detectCollision(*(*obj), *(*obj2));
 					if (res.intersect)
 					{
-						if (strcmp((*obj)->getType(), "Emitter") == 0)
+						if (strcmp((*obj2)->getType(), "Emitter") == 0)
 						{
-							(*obj)->setAlive(false);
-							if (strcmp((*obj2)->getType(), "Enemy") == 0)
+							(*obj2)->setAlive(false);
+							(*obj2)->setDelete(true);
+							if (strcmp((*obj)->getType(), "Enemy") == 0)
 							{
-								Enemy* enemy = (Enemy*)*obj2;
-								enemy->getActor().setLowerAnimation(AnimationPhase::BOTH_DEATH1);
-								enemy->getActor().setUpperAnimation(AnimationPhase::BOTH_DEATH1);
+								Enemy* enemy = (Enemy*)*obj;
+								if (enemy->isAlive())
+									enemy->hit();
 							}
 						}
 						/*std::stringstream str;
@@ -324,7 +355,7 @@ void GameEngine::prepare(float dt)
 					else if (res.willIntersect)
 					{
 						//OutputDebugString("Object collision will occur!\n");
-						// Object 1 will collide with `Object 2
+						// Object 1 will collide with Object 2
 					}
 				}
 				++obj2;
@@ -479,4 +510,10 @@ GameEngine::~GameEngine(void)
 	delete m_modelProgram;
 	delete m_hudProgram;
 	delete m_particleProgram;
+	for (std::vector<Object*>::iterator it = m_objects.begin();
+		 it != m_objects.end();
+		 ++it)
+	{
+		delete *it;
+	}
 }

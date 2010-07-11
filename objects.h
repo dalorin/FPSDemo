@@ -246,9 +246,11 @@ public:
 	Vector3 getScale();
 
 	void setVelocity(GLfloat x, GLfloat y, GLfloat z);
+	void setVelocity(Vector3 velocity);
 	Vector3 getVelocity();
 
 	void setAcceleration(GLfloat x, GLfloat y, GLfloat z);
+	void setAcceleration(Vector3 acceleration);
 	Vector3 getAcceleration();
 
 	virtual void adjustPitch(GLfloat angle);
@@ -262,7 +264,13 @@ public:
 
 	void setAlive(bool alive) {m_alive = alive;}
 	bool isAlive() {return m_alive;}
+	void setDelete(bool can_delete) {m_can_delete = can_delete;}
+	bool canDelete() {return m_can_delete;}
 	
+	virtual bool collides() {return true;}
+
+	virtual void kill();
+
 	virtual SimpleBox* getCollider();
 
 protected:
@@ -281,7 +289,10 @@ protected:
 
 	GameEngine* m_engine; // Pointer to engine that spawned object.
 
-	bool m_alive; // If false, engine will delete object.
+	bool m_alive; // If false, object is dead.
+	bool m_can_delete; // If true, engine will delete object.
+
+	GLfloat m_time_since_death;
 
 	GLUquadricObj *m_quadratic;
 

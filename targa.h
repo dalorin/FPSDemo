@@ -57,6 +57,9 @@ public:
     unsigned int getHeight() const;
     unsigned int getBitsPerPixel() const;
     const unsigned char* getImageData() const;
+	unsigned int getImageSize() const;
+
+	void resizeImageData(unsigned int size);
 
     GLenum getType() const {
         unsigned int bits = getBitsPerPixel();

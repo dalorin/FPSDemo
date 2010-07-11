@@ -8,7 +8,7 @@ class TexturedLandscape; // Forward declaration of Landscape class.
 class SkyBox; // Forward declaration of Landscape class.
 class Weapon; // Forward declaration of Weapon class.
 
-enum EntityType {LANDSCAPE, BULLET};
+enum EntityType {LANDSCAPE, BULLET, CHAOS_MARINE, VARGE};
 
 class GameEngine
 {
@@ -23,13 +23,16 @@ public:
 	void processInput();
 	void processMouseInput();
 
-	void spawnEntity(EntityType type);
+	void spawnEntity(EntityType type, Vector3 position, Vector3 velocity, Vector3 acceleration);
 
 	void setupPerspectiveProj();
 	void setupOrthoProj();
 
 	int getWidth();
 	int getHeight();
+
+	Camera* getCamera();
+	Vector3 getCameraPos();
 
 	~GameEngine(void);
 

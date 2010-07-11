@@ -1,14 +1,8 @@
 #include "Camera.h"
 #include "Weapon.h"
-#define _USE_MATH_DEFINES
-#include <math.h>
 #include <sstream>
 #include "CollisionDetection.h"
-
-GLfloat degreesToRadians(GLfloat degrees)
-{
-	return degrees * (GLfloat)M_PI / 180.0f;
-}
+#include "Utils.h"
 
 Camera::Camera(GameEngine* engine) : Object(engine)
 {
@@ -80,8 +74,8 @@ void Camera::moveBackward()
 void Camera::strafeLeft(GLfloat step)
 {
 	Vector3 pos = getPosition();
-	pos.x += cosf(degreesToRadians(-m_yaw));
-	pos.z += sinf(degreesToRadians(-m_yaw));
+	pos.x += cosf(Utils::degreesToRadians(-m_yaw));
+	pos.z += sinf(Utils::degreesToRadians(-m_yaw));
 	setPosition(pos);
 	reposition();
 }
@@ -89,8 +83,8 @@ void Camera::strafeLeft(GLfloat step)
 void Camera::strafeRight(GLfloat step)
 {
 	Vector3 pos = getPosition();
-	pos.x -= cosf(degreesToRadians(-m_yaw));
-	pos.z -= sinf(degreesToRadians(-m_yaw));
+	pos.x -= cosf(Utils::degreesToRadians(-m_yaw));
+	pos.z -= sinf(Utils::degreesToRadians(-m_yaw));
 	setPosition(pos);
 	reposition();
 }
@@ -122,9 +116,9 @@ Vector3 Camera::getSubjectRelative()
 
 void Camera::reposition()
 {
-	GLfloat x = sinf(degreesToRadians(m_yaw));
-	GLfloat y = sinf(degreesToRadians(m_pitch));
-	GLfloat z = cosf(degreesToRadians(m_yaw));
+	GLfloat x = sinf(Utils::degreesToRadians(m_yaw));
+	GLfloat y = sinf(Utils::degreesToRadians(m_pitch));
+	GLfloat z = cosf(Utils::degreesToRadians(m_yaw));
 	Vector3 subjectLocal(x, y, z);
 	Vector3 subjectWorld = getPosition() + subjectLocal;
 

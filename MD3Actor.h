@@ -37,7 +37,8 @@ enum AnimationPhase
 	LEGS_IDLECR   = 23,
 	LEGS_TURN     = 24,
 
-	MAX_ANIMATIONS = 25
+	MAX_ANIMATIONS = 25,
+	NONE = 26
 };
 
 struct Animation
@@ -57,8 +58,14 @@ public:
 	void load(std::string modelPath);
 	void setMaterialProperties(MaterialProps props);
 	void parseAnims(std::string modelPath);
+	AnimationPhase getLowerAnimation();
+	AnimationPhase getUpperAnimation();
+	AnimationPhase getNextLowerAnimation();
+	AnimationPhase getNextUpperAnimation();
 	void setLowerAnimation(AnimationPhase phase);
 	void setUpperAnimation(AnimationPhase phase);
+	void setNextLowerAnimation(AnimationPhase phase);
+	void setNextUpperAnimation(AnimationPhase phase);
 	void onPrepare(float dt);
 	void onRender(ShaderProgram *shaderProgram);
 
@@ -73,4 +80,6 @@ private:
 	Animation m_animations[MAX_ANIMATIONS];
 	AnimationPhase m_lowerAnimPhase;
 	AnimationPhase m_upperAnimPhase;
+	AnimationPhase m_nextLowerAnimPhase;
+	AnimationPhase m_nextUpperAnimPhase;
 };

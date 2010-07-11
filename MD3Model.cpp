@@ -181,6 +181,7 @@ void MD3Model::setAnimationParams(GLuint startFrame, GLuint endFrame, GLuint fps
 	m_fps = fps;
 
 	m_nextFrame = m_startFrame;
+	m_animationFinished = false;
 }
 
 SimpleBox* MD3Model::getCollider()
@@ -206,12 +207,20 @@ void MD3Model::onPrepare(float dt)
 		m_currentFrame = m_nextFrame;
 		m_nextFrame++;
 		if (m_nextFrame >= m_endFrame)
+		{
+			m_animationFinished = true;
 			m_nextFrame = m_startFrame;
+		}
 	}
 	m_lerpValue = m_timeCount / oneOverFPS;
 	/*stringstream str;
 	str << "dt: " << dt << "\tm_timeCount: " << m_timeCount << "\tm_lerpValue: " << m_lerpValue << endl;
 	OutputDebugString(str.str().c_str());*/
+}
+
+bool MD3Model::hasAnimationFinished()
+{
+	return m_animationFinished;
 }
 
 void MD3Model::drawModel(ShaderProgram *shaderProgram)

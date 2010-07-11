@@ -29,6 +29,8 @@ void MD3Actor::load(string modelPath)
 
 	setUpperAnimation(TORSO_STAND);
 	setLowerAnimation(LEGS_WALK);
+	setNextUpperAnimation(NONE);
+	setNextLowerAnimation(NONE);
 }
 
 void MD3Actor::setMaterialProperties(MaterialProps props)
@@ -77,22 +79,60 @@ void MD3Actor::parseAnims(string animFilename)
 		m_animations[i].startFrame -= numTorsoFrames;
 }
 
+AnimationPhase MD3Actor::getUpperAnimation()
+{
+	return m_upperAnimPhase;
+}
+
+AnimationPhase MD3Actor::getLowerAnimation()
+{
+	return m_lowerAnimPhase;
+}
+
+AnimationPhase MD3Actor::getNextUpperAnimation()
+{
+	return m_nextUpperAnimPhase;
+}
+
+AnimationPhase MD3Actor::getNextLowerAnimation()
+{
+	return m_nextLowerAnimPhase;
+}
+
 void MD3Actor::setUpperAnimation(AnimationPhase phase)
 {
-	m_upper.setAnimationParams(
-		m_animations[phase].startFrame,
-		m_animations[phase].startFrame + m_animations[phase].numFrames,
-		m_animations[phase].fps
-	);
+	m_upperAnimPhase = phase;
+	if (phase != NONE)
+	{
+		m_upper.setAnimationParams(
+			m_animations[phase].startFrame,
+			m_animations[phase].startFrame + m_animations[phase].numFrames,
+			m_animations[phase].fps
+		);
+	}
 }
 
 void MD3Actor::setLowerAnimation(AnimationPhase phase)
 {
-	m_lower.setAnimationParams(
-		m_animations[phase].startFrame,
-		m_animations[phase].startFrame + m_animations[phase].numFrames,
-		m_animations[phase].fps
-	);
+	m_lowerAnimPhase = phase;
+	if (phase != NONE)
+	{
+		m_lower.setAnimationParams(
+			m_animations[phase].startFrame,
+			m_animations[phase].startFrame + m_animations[phase].numFrames,
+			m_animations[phase].fps
+		);
+	}
+}
+
+void MD3Actor::setNextUpperAnimation(AnimationPhase phase)
+{
+	m_nextUpperAnimPhase = phase;	
+}
+
+void MD3Actor::setNextLowerAnimation(AnimationPhase phase)
+{
+	m_nextLowerAnimPhase = phase;	
 }
 
 SimpleBox* MD3Actor::getCollider()
@@ -138,7 +178,17 @@ void MD3Actor::onPrepare(float dt)
 {	
 	m_head.onPrepare(dt);
 	m_upper.onPrepare(dt);
+	if (m_upper.hasAnimationFinished() && m_nextUpperAnimPhase != NONE)
+	{
+		setUpperAnimation(m_nextUpperAnimPhase);
+		setNextUpperAnimation(NONE);
+	}
 	m_lower.onPrepare(dt);
+	if (m_lower.hasAnimationFinished() && m_nextLowerAnimPhase != NONE)
+	{
+		setLowerAnimation(m_nextLowerAnimPhase);
+		setNextLowerAnimation(NONE);
+	}
 }
 
 void MD3Actor::onRender(ShaderProgram *shaderProgram)

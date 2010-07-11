@@ -1,9 +1,9 @@
 #pragma once
-#include "objects.h"
+#include "Actor.h"
 #include "MD3Actor.h"
 
 class Enemy :
-	public Object
+	public Actor
 {
 public:
 	Enemy(GameEngine *engine, const char* modelPath);
@@ -13,12 +13,16 @@ public:
 	void onPrepare(GLfloat dt);
 	void onRender();
 
-	MD3Actor getActor() {return m_actor;}
+	MD3Actor* getActor() {return m_actor;}
+
+	void hit();
+	void kill();
+	void attack();
 
 	SimpleBox* getCollider();
 
 	~Enemy(void);
 
-private:
-	MD3Actor m_actor;
+protected:
+	MD3Actor* m_actor;
 };

@@ -46,6 +46,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
         return 1;
     }
 
+	float FPSLimiter = 0.0f;
     //This is the mainloop, we render frames until isRunning returns false
     while(programWindow.isRunning())
     {
@@ -53,11 +54,18 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
         //We get the time that passed since the last frame
         float elapsedTime = programWindow.getElapsedSeconds();
+		FPSLimiter += elapsedTime;
 
-        engine.prepare(elapsedTime); //Do any pre-rendering logic
-        engine.render(); //Render the scene
+		//Limit to 60fps.
+		//if (FPSLimiter >= 0.0167f)
+		if (true)
+		{
+			engine.prepare(elapsedTime); //Do any pre-rendering logic
+			engine.render(); //Render the scene
 
-        programWindow.swapBuffers();
+			programWindow.swapBuffers();
+			FPSLimiter = 0.0f;
+		}
     }
 
     engine.shutdown(); //Free any resources

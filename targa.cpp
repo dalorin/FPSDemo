@@ -59,7 +59,7 @@ bool TargaImage::isUncompressedTarga(const TargaHeader& header)
 }
 
 bool TargaImage::load(const string& filename)
-{
+{	
     ifstream fileIn(filename.c_str(), std::ios::binary);
 
     if (!fileIn.good())
@@ -235,6 +235,16 @@ unsigned int TargaImage::getBitsPerPixel() const
 const unsigned char* TargaImage::getImageData() const
 {
     return &m_imageData[0];
+}
+
+unsigned int TargaImage::getImageSize() const
+{
+	return m_imageData.size();
+}
+
+void TargaImage::resizeImageData(unsigned int size)
+{
+	m_imageData.resize(size);
 }
 
 /**
