@@ -19,7 +19,7 @@ public:
 	void kill();
 	void attack();
 
-	SimpleBox* getCollider();
+	Box* getCollider();
 
 	~Enemy(void);
 

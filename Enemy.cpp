@@ -76,7 +76,7 @@ void Enemy::onRender()
 	m_actor->onRender(m_engine->m_modelProgram);
 
 	// DEBUG CODE - Draw collider
-	/*SimpleBox* col = getCollider();
+	/*Box* col = getCollider();
 	std::vector<Vector3*> vec = col->getVertices(*m_position);
 	m_engine->m_basicProgram->bind();
 	glPointSize(4.0f);
@@ -87,7 +87,7 @@ void Enemy::onRender()
 	
 }
 
-SimpleBox* Enemy::getCollider()
+Box* Enemy::getCollider()
 {
 	return m_actor->getCollider();
 }

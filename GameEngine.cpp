@@ -406,7 +406,7 @@ void GameEngine::render()
 		(*it)->onPostRender();
 
 		//DEBUG CODE - Display bounding boxes
-		/*SimpleBox& c = *((*it)->getCollider());
+		/*Box& c = *((*it)->getCollider());
 		Box col(this, c);
 		col.setPosition((*it)->getPosition().x, (*it)->getPosition().y, (*it)->getPosition().z);
 		col.onRender();*/

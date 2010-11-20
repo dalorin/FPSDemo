@@ -100,7 +100,7 @@ SATResult CollisionDetection::detectCollision(Object& obj1, Object& obj2)
  * Projects the given object onto the given axis. Returns object's minimum and maximum points on the axis.
  * Used in Seperating Axis Theorem ColDet.
  **/
-void CollisionDetection::projectObjectOntoAxis(Object& obj, SimpleBox& collider, Vector3& axis, GLfloat& min, GLfloat& max)
+void CollisionDetection::projectObjectOntoAxis(Object& obj, Box& collider, Vector3& axis, GLfloat& min, GLfloat& max)
 {
 	GLfloat dp;
 	std::vector<Vector3*> &vertices = collider.getVertices(obj.getPosition());

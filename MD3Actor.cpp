@@ -135,12 +135,12 @@ void MD3Actor::setNextLowerAnimation(AnimationPhase phase)
 	m_nextLowerAnimPhase = phase;	
 }
 
-SimpleBox* MD3Actor::getCollider()
+Box* MD3Actor::getCollider()
 {
 	GLfloat min_x, max_x, min_y, max_y, min_z, max_z;
 		
 	// Get colliders of all component models and combine to form actor collider.
-	SimpleBox* colliders[3];
+	Box* colliders[3];
 
 	colliders[0] = m_head.getCollider();
 	colliders[1] = m_upper.getCollider();
@@ -171,7 +171,7 @@ SimpleBox* MD3Actor::getCollider()
 			max_z = colliders[i]->getZ2();
 	}
 
-	return new SimpleBox(min_x, max_x, min_y, max_y, min_z, max_z);
+	return new Box(NULL, min_x, max_x, min_y, max_y, min_z, max_z);
 }
 
 void MD3Actor::onPrepare(float dt)

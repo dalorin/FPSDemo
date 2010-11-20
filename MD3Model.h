@@ -100,7 +100,7 @@ public:
 	void setAnimationParams(GLuint startFrame, GLuint endFrame, GLuint fps);
 	bool hasAnimationFinished();
 
-	SimpleBox* getCollider();
+	Box* getCollider();
 
 	void drawModel(ShaderProgram *shaderProgram);
 	void onPrepare(float dt);

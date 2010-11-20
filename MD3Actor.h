@@ -69,7 +69,7 @@ public:
 	void onPrepare(float dt);
 	void onRender(ShaderProgram *shaderProgram);
 
-	SimpleBox* getCollider();
+	Box* getCollider();
 
 private:
 	MD3Model m_head;

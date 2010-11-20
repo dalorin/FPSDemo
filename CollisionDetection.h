@@ -11,7 +11,7 @@ class CollisionDetection
 {
 public:	
 	static SATResult detectCollision(Object& obj1, Object& obj2);
-	static void projectObjectOntoAxis(Object& obj, SimpleBox& collider, Vector3& axis, GLfloat& min, GLfloat& max);
+	static void projectObjectOntoAxis(Object& obj, Box& collider, Vector3& axis, GLfloat& min, GLfloat& max);
 	static GLfloat intervalDistance(GLfloat min1, GLfloat max1, GLfloat min2, GLfloat max2);
 
 private:

@@ -8,6 +8,7 @@
 
 class GameEngine; // Forward declaration of GameEngine class.
 class ShaderProgram; // Forward declaration of ShaderProgram class.
+class Box;
 
 #define BUFFER_OFFSET(i) ((char*)NULL + i)
 
@@ -203,27 +204,6 @@ private:
 	GLfloat m_shininess;
 };
 
-class SimpleBox
-{
-public:
-	SimpleBox(GLfloat length); //constructor
-	SimpleBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2); //constructor for boxes with non-uniform edge length
-
-	void initBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2);
-
-	GLfloat getX1() {return m_x1;}
-	GLfloat getY1() {return m_y1;}
-	GLfloat getZ1() {return m_z1;}
-	GLfloat getX2() {return m_x2;}
-	GLfloat getY2() {return m_y2;}
-	GLfloat getZ2() {return m_z2;}
-
-	std::vector<Vector3*> getVertices(Vector3 translation);
-
-protected:
-	GLfloat m_x1, m_y1, m_z1, m_x2, m_y2, m_z2;
-};
-
 class Object
 {
 public:
@@ -271,7 +251,7 @@ public:
 
 	virtual void kill();
 
-	virtual SimpleBox* getCollider();
+	virtual Box* getCollider();
 
 protected:
 	Vector3* m_position;
@@ -298,22 +278,32 @@ protected:
 
 	// Pointer to another object used when detecting collisions.
 	// Usually a bounding box or sphere. Could be a pointer to the object itself.
-	// At the moment this has to be a SimpleBox.
-	SimpleBox* m_collider;
+	// At the moment this has to be a Box.
+	Box* m_collider;
 };
 
-class Box : public Object, public SimpleBox
+class Box : public Object
 {
 public:
 	Box(GameEngine* engine, GLfloat length); //constructor
-	Box(GameEngine* engine, GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2); //constructor for boxes with non-uniform edge length
-	Box(GameEngine* engine, SimpleBox box); //constructor from SimpleBox
+	Box(GameEngine* engine, GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2); //constructor for boxes with non-uniform edge length	
 	
 	void initBox();
+	void initBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2);
+
+	GLfloat getX1() {return m_x1;}
+	GLfloat getY1() {return m_y1;}
+	GLfloat getZ1() {return m_z1;}
+	GLfloat getX2() {return m_x2;}
+	GLfloat getY2() {return m_y2;}
+	GLfloat getZ2() {return m_z2;}
+
+	std::vector<Vector3*> getVertices(Vector3 translation);
 
 	void onPrepare(GLfloat dt);
 	void onRender();
 private:
+	GLfloat m_x1, m_y1, m_z1, m_x2, m_y2, m_z2;
 	GLuint m_vertexBuffer, m_colorBuffer;
 };
 

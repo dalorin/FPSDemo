@@ -184,16 +184,16 @@ void MD3Model::setAnimationParams(GLuint startFrame, GLuint endFrame, GLuint fps
 	m_animationFinished = false;
 }
 
-SimpleBox* MD3Model::getCollider()
+Box* MD3Model::getCollider()
 {
 	// Build bounding box from frame min and max bounds.
-	return new SimpleBox(m_frames[m_currentFrame].minBounds.v[0],
-						 m_frames[m_currentFrame].maxBounds.v[0],
-						 m_frames[m_currentFrame].minBounds.v[1],
-						 m_frames[m_currentFrame].maxBounds.v[1],
-						 m_frames[m_currentFrame].minBounds.v[2],
-						 m_frames[m_currentFrame].maxBounds.v[2]
-						 );
+	return new Box(NULL,
+				   m_frames[m_currentFrame].minBounds.v[0],
+			       m_frames[m_currentFrame].maxBounds.v[0],
+				   m_frames[m_currentFrame].minBounds.v[1],
+				   m_frames[m_currentFrame].maxBounds.v[1],
+				   m_frames[m_currentFrame].minBounds.v[2],
+				   m_frames[m_currentFrame].maxBounds.v[2]);
 }
 
 void MD3Model::onPrepare(float dt)

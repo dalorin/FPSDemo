@@ -193,38 +193,17 @@ void Object::kill()
 	m_alive = false;
 }
 
-SimpleBox* Object::getCollider()
+Box* Object::getCollider()
 {
 	//TODO implement default collider
-	return new SimpleBox(5.0f);
-}
-
-SimpleBox::SimpleBox(GLfloat length)
-{
-	GLfloat hl = length / 2.0f;
-	initBox(-hl, hl, -hl, hl, -hl, hl);
-}
-
-SimpleBox::SimpleBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2)
-{
-	initBox(x1, x2, y1, y2, z1, z2);
-}
-
-void SimpleBox::initBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2)
-{
-	m_x1 = x1;
-	m_y1 = y1;
-	m_z1 = z1;
-	m_x2 = x2;
-	m_y2 = y2;
-	m_z2 = z2;
+	return new Box(NULL, 5.0f);
 }
 
 /** 
  * getVertices
  * Build and return a vector containing the object's vertices.
  **/
-std::vector<Vector3*> SimpleBox::getVertices(Vector3 translation)
+std::vector<Vector3*> Box::getVertices(Vector3 translation)
 {
 	std::vector<Vector3*> vertices;
 	vertices.push_back(new Vector3(m_x2 + translation.x, m_y2 + translation.y, m_z2 + translation.z));
@@ -240,28 +219,27 @@ std::vector<Vector3*> SimpleBox::getVertices(Vector3 translation)
 }
 
 Box::Box(GameEngine* engine, GLfloat length)
-: SimpleBox(length),
-  Object(engine)
+: Object(engine)
 {
-	initBox();
+	GLfloat hl = length / 2.0f;
+	initBox(-hl, hl, -hl, hl, -hl, hl);
 }
 
 Box::Box(GameEngine* engine, GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2)
-: SimpleBox(x1, x2, y1, y2, z1, z2),
-  Object(engine)
+: Object(engine)
 {
-	initBox();
+	initBox(x1, x2, y1, y2, z1, z2);
 }
 
-Box::Box(GameEngine* engine, SimpleBox box)
-: SimpleBox(box),
-  Object(engine)
+void Box::initBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GLfloat z2)
 {
-	initBox();
-}
+	m_x1 = x1;
+	m_y1 = y1;
+	m_z1 = z1;
+	m_x2 = x2;
+	m_y2 = y2;
+	m_z2 = z2;
 
-void Box::initBox()
-{
 	GLdouble colorArray[] = {
 		1.0, 0.0, 0.0, 1.0,
 		0.0, 1.0, 0.0, 1.0,
