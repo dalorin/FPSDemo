@@ -18,6 +18,8 @@ Object::Object(GameEngine* engine)
 
 	m_engine = engine;
 
+	m_collider = NULL;
+
 	m_alive = true;
 	m_can_delete = false;
 	m_time_since_death = 0.0f;
@@ -29,6 +31,7 @@ Object::~Object()
 	delete m_scale;
 	delete m_velocity;
 	delete m_acceleration;
+	delete m_collider;
 }
 
 const char* Object::getType()
@@ -196,7 +199,12 @@ void Object::kill()
 Box* Object::getCollider()
 {
 	//TODO implement default collider
-	return new Box(NULL, 5.0f);
+	if (!m_collider)
+	{
+		m_collider = new Box(NULL, 5.0f);
+	}
+
+	return m_collider;
 }
 
 /** 
@@ -205,15 +213,15 @@ Box* Object::getCollider()
  **/
 std::vector<Vector3*> Box::getVertices(Vector3 translation)
 {
-	std::vector<Vector3*> vertices;
-	vertices.push_back(new Vector3(m_x2 + translation.x, m_y2 + translation.y, m_z2 + translation.z));
-	vertices.push_back(new Vector3(m_x1 + translation.x, m_y2 + translation.y, m_z2 + translation.z));
-	vertices.push_back(new Vector3(m_x1 + translation.x, m_y1 + translation.y, m_z2 + translation.z));
-	vertices.push_back(new Vector3(m_x2 + translation.x, m_y1 + translation.y, m_z2 + translation.z));	
-	vertices.push_back(new Vector3(m_x2 + translation.x, m_y2 + translation.y, m_z1 + translation.z));
-	vertices.push_back(new Vector3(m_x2 + translation.x, m_y1 + translation.y, m_z1 + translation.z));
-	vertices.push_back(new Vector3(m_x1 + translation.x, m_y1 + translation.y, m_z1 + translation.z));
-	vertices.push_back(new Vector3(m_x1 + translation.x, m_y2 + translation.y, m_z1 + translation.z));
+	std::vector<Vector3*> vertices(8);
+	vertices[0] = new Vector3(m_x2 + translation.x, m_y2 + translation.y, m_z2 + translation.z);
+	vertices[1] = new Vector3(m_x1 + translation.x, m_y2 + translation.y, m_z2 + translation.z);
+	vertices[2] = new Vector3(m_x1 + translation.x, m_y1 + translation.y, m_z2 + translation.z);
+	vertices[3] = new Vector3(m_x2 + translation.x, m_y1 + translation.y, m_z2 + translation.z);	
+	vertices[4] = new Vector3(m_x2 + translation.x, m_y2 + translation.y, m_z1 + translation.z);
+	vertices[5] = new Vector3(m_x2 + translation.x, m_y1 + translation.y, m_z1 + translation.z);
+	vertices[6] = new Vector3(m_x1 + translation.x, m_y1 + translation.y, m_z1 + translation.z);
+	vertices[7] = new Vector3(m_x1 + translation.x, m_y2 + translation.y, m_z1 + translation.z);
 
 	return vertices;
 }
@@ -267,8 +275,9 @@ void Box::initBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GL
 		1.0, 0.0, 0.0, 1.0,
 	};
 
+	m_colors.resize(96);
 	for (int i = 0; i < 96; ++i)
-		m_colors.push_back(colorArray[i]);
+		m_colors[i] = colorArray[i];
 
 	//Front
 	GLfloat vertexArray[] = {
@@ -309,8 +318,9 @@ void Box::initBox(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2, GLfloat z1, GL
 		m_x2, m_y1, m_z1,
 	};
 
+	m_vertices.resize(72);
 	for (int i = 0; i < 72; ++i)
-		m_vertices.push_back(vertexArray[i]);
+		m_vertices[i] = vertexArray[i];
 
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);

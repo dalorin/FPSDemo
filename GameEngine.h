@@ -20,6 +20,7 @@ public:
 	void shutdown();
 	void onResize(int width, int height);
 
+	void processInputs();
 	void processInput();
 	void processMouseInput();
 
@@ -62,6 +63,8 @@ private:
 	SkyBox* m_skybox;
 
 	GLfloat lightAngle;
+
+	std::map<EntityType, DWORD> m_lastSpawnTime;
 
 	int m_width;
 	int m_height;

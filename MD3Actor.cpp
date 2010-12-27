@@ -7,6 +7,7 @@ using namespace std;
 
 MD3Actor::MD3Actor()
 {
+	m_collider = NULL;
 }
 
 void MD3Actor::load(string modelPath)
@@ -137,41 +138,45 @@ void MD3Actor::setNextLowerAnimation(AnimationPhase phase)
 
 Box* MD3Actor::getCollider()
 {
-	GLfloat min_x, max_x, min_y, max_y, min_z, max_z;
-		
-	// Get colliders of all component models and combine to form actor collider.
-	Box* colliders[3];
+	if (!m_collider) {
+		GLfloat min_x, max_x, min_y, max_y, min_z, max_z;
+			
+		// Get colliders of all component models and combine to form actor collider.
+		Box* colliders[3];
 
-	colliders[0] = m_head.getCollider();
-	colliders[1] = m_upper.getCollider();
-	colliders[2] = m_lower.getCollider();
+		colliders[0] = m_head.getCollider();
+		colliders[1] = m_upper.getCollider();
+		colliders[2] = m_lower.getCollider();
 
-	min_x = colliders[0]->getX1();
-	max_x = colliders[0]->getX2();
-	min_y = colliders[0]->getY1();
-	max_y = colliders[0]->getY2();
-	min_z = colliders[0]->getZ1();
-	max_z = colliders[0]->getZ2();
+		min_x = colliders[0]->getX1();
+		max_x = colliders[0]->getX2();
+		min_y = colliders[0]->getY1();
+		max_y = colliders[0]->getY2();
+		min_z = colliders[0]->getZ1();
+		max_z = colliders[0]->getZ2();
 
-	for (int i = 1; i < 3; i++)
-	{
-		if (colliders[i]->getX1() < min_x)
-			min_x = colliders[i]->getX1();
-		if (colliders[i]->getX2() > max_x)
-			max_x = colliders[i]->getX2();
+		for (int i = 1; i < 3; i++)
+		{
+			if (colliders[i]->getX1() < min_x)
+				min_x = colliders[i]->getX1();
+			if (colliders[i]->getX2() > max_x)
+				max_x = colliders[i]->getX2();
 
-		if (colliders[i]->getY1() < min_y)
-			min_y = colliders[i]->getY1();
-		if (colliders[i]->getY2() > max_y)
-			max_y = colliders[i]->getY2();
+			if (colliders[i]->getY1() < min_y)
+				min_y = colliders[i]->getY1();
+			if (colliders[i]->getY2() > max_y)
+				max_y = colliders[i]->getY2();
 
-		if (colliders[i]->getZ1() < min_z)
-			min_z = colliders[i]->getZ1();
-		if (colliders[i]->getZ2() > max_z)
-			max_z = colliders[i]->getZ2();
+			if (colliders[i]->getZ1() < min_z)
+				min_z = colliders[i]->getZ1();
+			if (colliders[i]->getZ2() > max_z)
+				max_z = colliders[i]->getZ2();
+		}
+
+		m_collider = new Box(NULL, min_x, max_x, min_y, max_y, min_z, max_z);
 	}
 
-	return new Box(NULL, min_x, max_x, min_y, max_y, min_z, max_z);
+	return m_collider;
 }
 
 void MD3Actor::onPrepare(float dt)
@@ -198,4 +203,5 @@ void MD3Actor::onRender(ShaderProgram *shaderProgram)
 
 MD3Actor::~MD3Actor(void)
 {	
+	delete m_collider;
 }

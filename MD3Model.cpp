@@ -17,6 +17,7 @@ MD3Model::MD3Model()
 	m_currentFrame = 0;
 	m_nextFrame = 0;
 	m_timeCount = 0.0f;
+	m_collider = NULL;
 }
 
 bool MD3Model::load(string modelFilename)
@@ -186,14 +187,18 @@ void MD3Model::setAnimationParams(GLuint startFrame, GLuint endFrame, GLuint fps
 
 Box* MD3Model::getCollider()
 {
-	// Build bounding box from frame min and max bounds.
-	return new Box(NULL,
-				   m_frames[m_currentFrame].minBounds.v[0],
-			       m_frames[m_currentFrame].maxBounds.v[0],
-				   m_frames[m_currentFrame].minBounds.v[1],
-				   m_frames[m_currentFrame].maxBounds.v[1],
-				   m_frames[m_currentFrame].minBounds.v[2],
-				   m_frames[m_currentFrame].maxBounds.v[2]);
+	if (!m_collider) {
+		// Build bounding box from frame min and max bounds.
+		m_collider = new Box(NULL,
+							 m_frames[m_currentFrame].minBounds.v[0],
+							 m_frames[m_currentFrame].maxBounds.v[0],
+							 m_frames[m_currentFrame].minBounds.v[1],
+							 m_frames[m_currentFrame].maxBounds.v[1],
+							 m_frames[m_currentFrame].minBounds.v[2],
+							 m_frames[m_currentFrame].maxBounds.v[2]);
+	}
+
+	return m_collider;
 }
 
 void MD3Model::onPrepare(float dt)
@@ -344,4 +349,5 @@ void MD3Model::renderNormals(ShaderProgram *shaderProgram)
 
 MD3Model::~MD3Model(void)
 {
+	delete m_collider;
 }

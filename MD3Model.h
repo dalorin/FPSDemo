@@ -121,6 +121,8 @@ private:
 	float m_lerpValue;
 	bool m_animationFinished;
 
+	Box* m_collider;
+
 	MD3::MD3Header m_header;
 
 	std::vector<MD3::Frame> m_frames;

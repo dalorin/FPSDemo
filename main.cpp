@@ -60,6 +60,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		//if (FPSLimiter >= 0.0167f)
 		if (true)
 		{
+			if (GetForegroundWindow() == programWindow.getHWND())
+			{
+				engine.processInputs();
+			}
 			engine.prepare(elapsedTime); //Do any pre-rendering logic
 			engine.render(); //Render the scene
 

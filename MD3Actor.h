@@ -77,6 +77,8 @@ private:
 	MD3Model m_lower;
 	MD3Model m_weapon;
 
+	Box* m_collider;
+
 	Animation m_animations[MAX_ANIMATIONS];
 	AnimationPhase m_lowerAnimPhase;
 	AnimationPhase m_upperAnimPhase;

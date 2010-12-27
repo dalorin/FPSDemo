@@ -287,34 +287,42 @@ void GameEngine::spawnEntity(EntityType type, Vector3 position, Vector3 velocity
 {
 	switch(type)
 	{
-	case BULLET :
-		{		
-		Emitter *bullet = new Emitter(this, 5, 0.3f, 0.15f, 0.05f, "textures/tracer.tga");
-		bullet->setPosition(position);
-		bullet->setVelocity(velocity);
-		bullet->setAcceleration(acceleration);		
-		m_objects.push_back(bullet);
-		break;
-		}
-	case CHAOS_MARINE :
+		case BULLET :
 		{
-		Enemy *enemy = new Enemy(this, "models/players/chaos-marine/");		
-		enemy->setPosition(position);
-		Vector3 camPos = getCameraPos();
-		//enemy->setVelocity(camPos.x, 0.0f, camPos.z);		
-		m_objects.push_back(enemy);
-		break;
+			if (m_lastSpawnTime.find(BULLET) == m_lastSpawnTime.end() || (GetTickCount() - m_lastSpawnTime[BULLET]) > 300)
+			{
+				Emitter *bullet = new Emitter(this, 50, 0.3f, 0.15f, 0.05f, "textures/tracer.tga");		
+				bullet->setPosition(position);
+				bullet->setVelocity(velocity);
+				bullet->setAcceleration(acceleration);		
+				m_objects.push_back(bullet);
+				m_lastSpawnTime[BULLET] = GetTickCount();
+			}
+			break;
 		}
-	case VARGE :
-		break;
+		case CHAOS_MARINE :
+		{
+			Enemy *enemy = new Enemy(this, "models/players/chaos-marine/");		
+			enemy->setPosition(position);
+			Vector3 camPos = getCameraPos();
+			//enemy->setVelocity(camPos.x, 0.0f, camPos.z);		
+			m_objects.push_back(enemy);
+			break;
+		}
+		case VARGE :
+			break;
 	}
 }
 
-void GameEngine::prepare(float dt)
+void GameEngine::processInputs()
 {
 	// Process keyboard and mouse button input.
 	processInput();
 	processMouseInput();
+}
+
+void GameEngine::prepare(float dt)
+{
 	std::vector<Object*>::iterator obj = m_objects.begin();
 	while (obj != m_objects.end())
 	{

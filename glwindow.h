@@ -25,6 +25,8 @@ public:
     LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     float getElapsedSeconds();
+	HWND getHWND() { return m_hwnd; }
+
 private:
     GameEngine* m_engine; //A link to the game engine
     bool m_isRunning; //Is the window still running?
